@@ -21,14 +21,47 @@ architecture Behavioral of send_one is
 begin
   
   process (clk)
+
+    variable cpt  : integer range 0 to 60 := 0;
+    variable which : integer range 0 to 1  := 0;
+    
+
   begin
     if rising_edge (clk) then
+ 
+        end_1   <= '0';
+        pulse_1 <= '0';
 
       if start_1 = '1' then
+        cpt := cpt + 2;
         
-        pulse_1 <= '0' after 0 us, '1' after 58 us, '0' after 58 us; 
-        end_1   <= '1' after 116 us;
+        if which =  0 then 
+          -- send à 0 for 58 clock cycle
 
+          pulse_1 <= '0';
+
+          -- reset the cpt
+          if cpt > 58 then
+            cpt := 0;
+            which := 1;
+          end if;
+          
+        else
+          -- send à 1 for 58 clock cycle
+          
+            pulse_1 <= '1';
+            
+          -- reset the cpt and put the pulse to 0 again            
+          if cpt > 58 then
+            end_1   <= '1';
+            cpt := 0;
+            pulse_1 <= '0';
+            which := 0;
+          end if;
+
+        -- end choix envoie
+        end if;
+          
       else
         end_1   <= '0';
         pulse_1 <= '0';

@@ -21,11 +21,23 @@ begin
   LO : entity work.send_one
     port map (clk, start_1, end_1, pulse_1);
 
-  -- set the clock period to 2 ns
-  clk <= not clk after 1 ns;
+  process
+  begin
 
-  -- send a start
-  start_1 <= '1' after 2 ns, start_1 <= '0' after 3 ns;
-  
-  
+    for i in 0 to 15 loop
+      clk <= not clk;
+      wait for 1 us;      
+    end loop;
+    
+    
+    start_1 <= '1';
+    
+    for i in 0 to 150 loop
+      clk <= not clk;
+      wait for 1 us;      
+    end loop;
+    
+    
+    wait;
+  end process;
 end simu;
