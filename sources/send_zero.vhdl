@@ -8,7 +8,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity send_zero is
   Port (
     clk     : in  STD_LOGIC;
-    start_0 : in  STD_LOGIC;
+    start_0 : in  STD_LOGIC := '0';
     end_0   : out STD_LOGIC := '0';
     pulse_0 : out STD_LOGIC := '0'
     );      

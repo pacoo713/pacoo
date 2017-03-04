@@ -7,7 +7,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity send_preamble is
   Port (
     clk     : in  STD_LOGIC;
-    start_p : in  STD_LOGIC;
+    start_p : in  STD_LOGIC := '0';
     end_p   : out STD_LOGIC := '0';
     pulse_p : out STD_LOGIC := '0'
     );      
@@ -24,7 +24,7 @@ architecture Behavioral of send_preamble is
   component send_one
     port (
     clk     : in  STD_LOGIC;
-    start_1 : in  STD_LOGIC;
+    start_1 : in  STD_LOGIC := '0';
     end_1   : out STD_LOGIC := '0';
     pulse_1 : out STD_LOGIC := '0'
 );
@@ -34,8 +34,8 @@ architecture Behavioral of send_preamble is
 
 
   
-  signal start_1 : STD_LOGIC;
-  signal end_1 : STD_LOGIC;
+  signal start_1 : STD_LOGIC := '0';
+  signal end_1   : STD_LOGIC := '0';
   
 begin
 
@@ -52,7 +52,7 @@ begin
   
   process (clk)
 
-    variable cpt : integer range 0 to 15;
+    variable cpt : integer range 0 to 15  := 0;
     
   begin
     if rising_edge (clk) then

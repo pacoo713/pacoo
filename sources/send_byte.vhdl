@@ -7,7 +7,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity send_byte is
   Port (
     clk     : in  STD_LOGIC;
-    start_b : in  STD_LOGIC;
+    start_b : in  STD_LOGIC := '0';
     byte    : in  Std_Logic_Vector (7 downto 0); 
     end_b   : out STD_LOGIC := '0';
     pulse_b : out STD_LOGIC := '0'
@@ -24,7 +24,7 @@ architecture Behavioral of send_byte is
   component send_one
     port (
       clk     : in  STD_LOGIC;
-      start_1 : in  STD_LOGIC;
+      start_1 : in  STD_LOGIC := '0';
       end_1   : out STD_LOGIC := '0';
       pulse_1 : out STD_LOGIC := '0'
       );
@@ -35,7 +35,7 @@ architecture Behavioral of send_byte is
   component send_zero
     port (
       clk     : in  STD_LOGIC;
-      start_0 : in  STD_LOGIC;
+      start_0 : in  STD_LOGIC := '0';
       end_0   : out STD_LOGIC := '0';
       pulse_0 : out STD_LOGIC := '0'
       );
@@ -44,13 +44,13 @@ architecture Behavioral of send_byte is
 --------------------------------------------------------------------------------
 
   -- signals declaration for instantiation
-  signal start_1 : STD_LOGIC;
-  signal end_1 : STD_LOGIC;
-  signal pulse_1 : STD_LOGIC;   
+  signal start_1 : STD_LOGIC := '0';
+  signal end_1 : STD_LOGIC := '0';
+  signal pulse_1 : STD_LOGIC := '0';   
 
-  signal start_0 : STD_LOGIC;
-  signal end_0 : STD_LOGIC;
-  signal pulse_0 : STD_LOGIC;   
+  signal start_0 : STD_LOGIC := '0';
+  signal end_0 : STD_LOGIC := '0';
+  signal pulse_0 : STD_LOGIC := '0';   
   
 begin
 
@@ -77,8 +77,8 @@ begin
   
   process (clk)
 
-    variable cpt : integer range 0 to 102;
-    variable byte_cpt : integer range 0 to 8;
+    variable cpt : integer range 0 to 102 := 0;
+    variable byte_cpt : integer range 0 to 8 := 0;
     
   begin
     if rising_edge (clk) then

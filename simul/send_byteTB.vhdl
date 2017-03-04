@@ -32,6 +32,8 @@ begin
     
     byte <= "10101010";
     start_b <= '1';
+
+
     
     for i in 0 to 5000 loop
       clk <= not clk;
