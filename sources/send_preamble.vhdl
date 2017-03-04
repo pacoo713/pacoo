@@ -13,7 +13,8 @@ entity send_preamble is
     );      
 end send_preamble;
 
------------------------------------------------------
+--------------------------------------------------------------------------------
+
 
 -- send a preamble in DCC protocol
 architecture Behavioral of send_preamble is
@@ -29,7 +30,8 @@ architecture Behavioral of send_preamble is
 );
   end component;
 
--------------------------------------------------
+--------------------------------------------------------------------------------
+
 
   
   signal start_1 : STD_LOGIC;
@@ -45,7 +47,7 @@ begin
       pulse_1 => pulse_p    
       );
 
----------------------------------------------------------
+--------------------------------------------------------------------------------
 
   
   process (clk)
@@ -78,10 +80,10 @@ begin
         cpt := 0;
       --  end if start_p
       end if;
+
+      
     -- end rising_edge
     end if;
-    
-
   end process;
 
 end Behavioral;
