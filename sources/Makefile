@@ -1,5 +1,5 @@
 GHDL=ghdl
-all : send_oneTB send_zeroTB
+all : send_oneTB send_zeroTB send_preambleTB
 
 # compil send_one
 send_one.o : send_one.vhdl
@@ -24,9 +24,20 @@ send_zeroTB : send_zeroTB.o
 	${GHDL} -e -v send_zeroTB
 	${GHDL} -r send_zeroTB --vcd=send_zero.vcd
 
+# compil send_preamble
+send_preamble.o : send_preamble.vhdl
+	${GHDL} -a -v send_preamble.vhdl
+
+send_preambleTB.o : ../simul/send_preambleTB.vhdl send_preamble.o
+	${GHDL} -a -v ../simul/send_preambleTB.vhdl 
+
+send_preambleTB : send_preambleTB.o
+	${GHDL} -e -v send_preambleTB
+	${GHDL} -r send_preambleTB --vcd=send_preamble.vcd
+
 
 
 
 clean :
 	rm -f *.o *#  *vcd *~
-	rm -f work-obj93.cf reg_tb send_onetb send_zerotb  
+	rm -f work-obj93.cf reg_tb send_onetb send_zerotb send_preambletb  

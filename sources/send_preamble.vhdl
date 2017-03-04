@@ -4,7 +4,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 
-
 entity send_preamble is
   Port (
     clk     : in  STD_LOGIC;
@@ -14,36 +13,69 @@ entity send_preamble is
     );      
 end send_preamble;
 
--- create and instanciate a send_one
+-----------------------------------------------------
 
 -- send a preamble in DCC protocol
 architecture Behavioral of send_preamble is
 
-  -- cpt for the 14  '1' bits to send 
-  variable cpt : integer range 0 to 14 := 0;
+
+  --  SEND_ONE coponent declaration
+  component send_one
+    port (
+    clk     : in  STD_LOGIC;
+    start_1 : in  STD_LOGIC;
+    end_1   : out STD_LOGIC := '0';
+    pulse_1 : out STD_LOGIC := '0'
+);
+  end component;
+
+-------------------------------------------------
+
+  
+  signal start_1 : STD_LOGIC;
+  signal end_1 : STD_LOGIC;
   
 begin
+
+  send: send_one
+    port map (
+      clk     => clk,
+      start_1 => start_1,
+      end_1   => end_1,
+      pulse_1 => pulse_p    
+      );
+
+---------------------------------------------------------
+
   
   process (clk)
+
+    variable cpt : integer range 0 to 15;
+    
   begin
     if rising_edge (clk) then
 
       if start_p = '1' then
+
+        -- if not 14 1 send
+        if cpt < 14  then
+          -- send a request to send a 1
+          start_1 <= '1';
+          end_p <= '0';
+          -- if a 1 is finish to send cpt ++
+          if end_1 = '1' then
+            cpt := cpt + 1;
+          -- end end_1 =1
+          end if;
+        -- if the preamble is send
+        else
+          end_p <= '1';
+          cpt := 0;
+        end if;
         
-        -- fsm explaination
-        --  if start_p = 1 launch the fsm
-        --  
-        --  1) while cpt < 14 continue into the fsm 
-        --      if not go to 2)
-        --
-        --  send 1 to start_1 and increment cpt
-        --  wait for the end_0 signal turning to 1
-        --
-        --  then go back to 1)
-        --
-        -- 2) send a 1 to end_p signal and reset cpt to 0
-        
-        
+      else
+        end_p <= '0';
+        cpt := 0;
       --  end if start_p
       end if;
     -- end rising_edge
