@@ -84,9 +84,12 @@ begin
     if rising_edge (clk) then
 
         end_b <= '0';
+        start_0 <=  '0';
+        start_1 <=  '0';
 
         -- test if a send is done
         if (end_0 or end_1) =  '1' then
+          report "un octet envoyé : " & STD_LOGIC'image(end_0) & STD_LOGIC'image(end_1); 
           cpt := cpt + 1;
           start_0 <=  '0';
           start_1 <=  '0';
@@ -97,7 +100,7 @@ begin
         -- send a end signal and reset cpt
         end_b <= '1';
         cpt := 0;
-
+        report "fin envoie octet";
       else
         if start_b = '1' then
           

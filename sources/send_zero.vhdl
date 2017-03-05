@@ -42,7 +42,7 @@ begin
           pulse_0 <= '0';
 
           -- reset the cpt
-          if cpt > 100 then
+          if cpt > 96 then
             cpt := 0;
             which := 1;
           end if;

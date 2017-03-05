@@ -30,8 +30,8 @@ begin
       wait for 1 us;      
     end loop;
     
-    addr <= "10101010";
-    data <= "01010101";
+    addr <= "00000000";
+    data <= "11111111";
 
     go   <= '1';
     

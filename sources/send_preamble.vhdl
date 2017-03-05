@@ -57,6 +57,9 @@ begin
   begin
     if rising_edge (clk) then
 
+      end_p <= '0';
+      start_1 <= '0';
+      
       if start_p = '1' then
 
         -- if not 14 1 send
@@ -72,12 +75,14 @@ begin
         -- if the preamble is send
         else
           end_p <= '1';
+          start_1 <= '0';
           cpt := 0;
         end if;
         
       else
         end_p <= '0';
         cpt := 0;
+        start_1 <= '0';
       --  end if start_p
       end if;
 

@@ -41,7 +41,7 @@ begin
           pulse_1 <= '0';
 
           -- reset the cpt
-          if cpt > 58 then
+          if cpt > 54 then
             cpt := 0;
             which := 1;
           end if;
