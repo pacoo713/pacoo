@@ -1,17 +1,19 @@
+.. footer:: page ###Page###
+
 ==================
 Rapport de TP FPGA
 ==================
 
------------
-Sous Titre?
------------
+-----------------------------
+FPGA 1 Systemes programmables
+-----------------------------
 
 |
 |
 |
 |
 
-*Ayrault Maxime* **3203694** - *Nguyen Gabriel* **32?????**
+*Ayrault Maxime* **3203694** - *Nguyen Gabriel* **3200625**
 
 |
 |
@@ -24,11 +26,6 @@ Sous Titre?
 Intro
 =====
 
-Ce qu'on compte faire dans cette matière,
-les différents objectif et tout
-
-
-
 
 |
 |
@@ -61,23 +58,35 @@ les différents objectif et tout
 |
 |
 |
-|
-
 
 TP 1
 ====
 
+**Synthèse VHDL sur FPGA**
 
-*Titre du TP*
+|
+
+
+Le double objectif de ce TP est de :
+ * Prendre en main la chaîne de conception **Xilinx Vivado** ainsi que
+   la carte FPGA **Nexys 4 DDR** sur laquelle nous travaillerons.
+ * De comprendre comment fonctionne l'outil de synthèse de *Vivado* et
+   de quelle façon il va interpreter un code VHDL imprécis ou erroné.
+
+|
 
 |I. prise en main du modèle
 ---------------------------
 
-1) Création d'un module VHDL
-~~~~~~~~~~~~~~~~~~~~~~~~~
+|
+
+3) Création d'un module VHDL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Dans cette première partie nous allons creer un module permetant
-d'allumer des leds selon la valeur d'interrupteurs sur la carte.
+d'allumer des **LEDS** selon la valeur d'interrupteurs sur la carte.
+
+|
 
 .. code:: VHDL
 
@@ -104,13 +113,31 @@ d'allumer des leds selon la valeur d'interrupteurs sur la carte.
  end Behavioral;
 
 |
+|
+|
+|
+|
+|
+|
+
+4) Testbench et simulation avec Modelsim
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Voici le chronogramme de la simulation de notre programme précedent.
+
+.. image:: chrono_I_4.png
+   :scale: 75 %
+   :alt: chronogramme du programme du 3)
+   :align: center
+
+
 
 ----------------------------
 
 |
  
 |II. Cas d'études-Synthèse VHDL
----------------------------
+-------------------------------
 
 | On doit traiter 3-4 parties séparées, chaque partie est composé d'un petit système permettant
 | de réaliser une fonction simple.
@@ -119,22 +146,22 @@ d'allumer des leds selon la valeur d'interrupteurs sur la carte.
 
 
 1) Compteurs imbriqués
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 | Le fichier Test_CPT permet d'instancier une petite structure comprenant deux compteurs
-| et une gestion de l'affichage des 4 premières leds.
+| et une gestion de l'affichage des 4 premières **LEDS**.
 |
 | Un Premier compteur *Cpt* inverse la valeur du signal ``start`` une fois tout les
 | *20000000 cycles*, initialisé à ``'0'``. (bof comme phrase..)
 |
 | A chaque fois que le signal ``start`` vaut ``'1'`` le compteur *Cpt2* (sur 28 bits) est incrémenté.
 
-Il y a deux mode pour l'affichage sur les LEDS
- * Le bouton gauche est appuyé -> Les 4 LEDS de gauches de la cartes
+Il y a deux mode pour l'affichage sur les **LEDS**
+ * Le bouton gauche est appuyé -> Les 4 **LEDS** de gauches de la cartes
    sont allumées.
 
  * Le bouton gauche est relaché -> Affichage des 4 MSB de CPT2 sur les
-   4 premières LEDS.
+   4 premières **LEDS**.
 
 |
 |
@@ -256,7 +283,7 @@ Code corrigé:
 | deux boutons. le *bouton de gauche* sert à incrementer la valeur de notre compteur, celui du
 | *centre* pour le décrementer.
 | Le compteur est un compteur sur 4 bits dont la valeur est affichée en binaire sur les 4 premières 
-| leds de la carte. Il y a aussi la led 15 qui s'allume une fois une valeur seuil
+| **LEDS** de la carte. Il y a aussi la **LED** 15 qui s'allume une fois une valeur seuil
 | dépasée.
 |
 | Lors de l'implémentation, on remarque que la fonction écrite dans le fichier VHDL ne fonctione pas car
@@ -280,7 +307,7 @@ Code corrigé:
 	  Clk      : in STD_LOGIC;
 	  -- Reset Asynchrone
 	  Reset    : in  STD_LOGIC;
-	  -- LEDS Values
+	  -- Leds Values
           Count    : out  STD_LOGIC_VECTOR (3 downto 0);
 	  -- Indicateur Valeur Seuil 
 	  Sup      : out  STD_LOGIC;
@@ -370,7 +397,7 @@ Code corrigé:
 
 | Le fichier Selector permet d'instancier un decodeur qui prends en entré les signaux
 | de sortie (*sup* et *cout*) du fichier impulse_Count, et initialise le signal *Limit* qui affichera
-| differents motifs sur les 16 leds en fonction de ces deux signaux.
+| differents motifs sur les 16 **LEDS** en fonction de ces deux signaux.
 |
 | Il y a eu des erreur de compilation car dans le fichier originel toutes les conditions
 | du ``case`` n'étaient pas déclarées. Il a fallut retirer le commentaire indiquant
@@ -426,13 +453,13 @@ Code corrigé:
 
 	  -- Signification de Limit (Pour la Machine à États de la Suite du TP) 
 	  -- Les 2 MSB définissent le Mode de Clignotement 
-	  -- 00 --> 	LEDs Toujours Éteintes 
-	  -- 10 --> 	Clignotement des LEDs 
+	  -- 00 --> 	**LEDS** Toujours Éteintes 
+	  -- 10 --> 	Clignotement des **LEDS** 
 	  --	            La Fréquence de Clignotement 
 	  --		Dépend des LSB de Limit 
 	  --		24 Millions --> 1 fois par Seconde 
 	  --	            8 Millions --> 3 fois par Seconde 
-	  -- 11	-->	LEDs Toujours Allumées 
+	  -- 11	-->	**LEDS** Toujours Allumées 
 
 	       case (Decode) is 
 
@@ -471,8 +498,8 @@ Code corrigé:
 ~~~~~~
 
 
-| Dans cette étape le but est d'implémenter une machine à état qui va permetre de réaliser le fonctionnement des
-| leds (éteintes, allumés ou clignement).
+| Dans cette étape le but est d'implémenter une machine à état qui va permettre
+| de gerer les différents états des **LEDS** (éteintes, allumés ou clignement).
 
   
 |
@@ -487,11 +514,11 @@ Code corrigé:
 	 Clk : in  STD_LOGIC;				           
 	 --Reset Asynchrone 
 	 Reset : in  STD_LOGIC;
-	 --Mode d'Affichage des LEDs 
+	 --Mode d'Affichage des **LEDS** 
 	 Mode : in  STD_LOGIC_VECTOR (1 downto 0);	           
 	 --Seuil du Compteur pour Vitesse
 	 Seuil : in  STD_LOGIC_VECTOR (25 downto 0);              
-	 --Commande des LEDs 
+	 --Commande des **LEDS** 
 	 LED : out  STD_LOGIC_VECTOR (3 downto 0));	           
    end FSM; 
 
@@ -555,22 +582,22 @@ Code corrigé:
    process(Cpt,EP,Mode,Seuil) 
    begin
    
-     -- Par Défaut les LEDs sont Éteintes 
+     -- Par Défaut les **LEDS** sont Éteintes 
      LED <= "0000";                                                    
 	  
      ----------------------------------------------------------------- 
      -- 	Modes de Fonctionnement				
-     --		Mode = 00 --> LEDs Éteintes 					
-     --		Mode = 10 --> LEDs Clignotent				
-     --		Mode = 11 --> LEDs Allumées					
+     --		Mode = 00 --> **LEDS** Éteintes 					
+     --		Mode = 10 --> **LEDS** Clignotent				
+     --		Mode = 11 --> **LEDS** Allumées					
      ----------------------------------------------------------------- 
 	  
      case (EP) is 
 	  
-        -- LEDs Éteintes 
+        -- **LEDS** Éteintes 
 	-- On Reste dans cet État Tant que Mode est à 00 
-	-- Si Mode Passe à 10, On Passe en LEDs Clignotement 
-	-- Si Mode Passe à 11, On Passe en LEDs Allumées 
+	-- Si Mode Passe à 10, On Passe en **LEDS** Clignotement 
+	-- Si Mode Passe à 11, On Passe en **LEDS** Allumées 
 
 	  when LED_OFF	=> LED <= "0000";
           --Rajout de la valeur en sortie 
@@ -580,7 +607,7 @@ Code corrigé:
 			      EF <= LED_ON; 
 	                   end if; 
 	  
-	  -- LEDs Clignotement - (Eteint) 
+	  -- **LEDS** Clignotement - (Eteint) 
 	  -- Le Compteur Compte Jusqu'au Seuil puis on Passe à l'Etat Suivant 
 	  when CLIGN_OFF	=>  LED <= "0000";
           --Rajout de la valeur de sortie 
@@ -593,10 +620,10 @@ Code corrigé:
 			      EF <= LED_ON; 
                            end if; 
 
-	  -- LEDs Allumées 
+	  -- **LEDS** Allumées 
 	  -- On Reste dans cet état tant que Mode est à 11 
-	  -- Si Mode Passe à 10, On Passe en LEDs Clignotement 
-	  -- Si Mode Passe à 00, On Passe en LEDs Éteintes  
+	  -- Si Mode Passe à 10, On Passe en **LEDS** Clignotement 
+	  -- Si Mode Passe à 00, On Passe en **LEDS** Éteintes  
 	  when LED_ON	=> LED <= "1111"; 
 	                   if Mode = "10" then
 			      EF <= CLIGN_ON; 
@@ -604,7 +631,7 @@ Code corrigé:
 			      EF <= LED_OFF; 
 			   end if; 
 
-	  -- LEDs Clignotement - (Allumé) 
+	  -- **LEDS** Clignotement - (Allumé) 
 	  -- Le Compteur Compte Jusqu'au Seuil puis on Passe à l’état Suivant 
 	  when CLIGN_ON	=> LED <= "1111"; 
 	                   if Mode = "00" then
@@ -634,13 +661,45 @@ TP 2
 ====
 
 
-*Titre du TP*
+**Codesign Materiel/Logiciel**
 
-|I. Développement de l'application logicielle
----------------------------
+| L'objectif de ce TP est d'implémenter puis de programmer un système miste matériel/logiciel sur
+| le FPGA. Ce systèmesera basé sur le processeur embarqué *Microblaze* de *Xilinx*.
 
-| Dans cette exercice nous devons écrire un programme C permettant qui sera executé sur le
-| microcontroleur ``Microblaze`` afin d'allumer des leds en actionnanr des interrupteurs.
+Le développement sera réalisé grâce aux outils suivants :
+ * Le mode **IP Integrator** de *Vivado* pour la génération de la
+   plate-forme matérielle.
+ * **SDK (Software Development Kit)** pour le développement et
+   l'execution de l'application logicielle.
+
+|
+|
+
+|II. Spécification de la plate-forme matérielle
+-----------------------------------------------
+
+| Voici l'architecture que nous avons créee et que nous allons utiliser lors de ce TP.
+
+.. image:: archi_2_2.png
+   :scale: 75 %
+   :alt: architecture du microblaze que nous allons utiliser.
+   :align: center
+
+
+|
+|
+
+|III. Développement de l'application logicielle
+-----------------------------------------------
+
+Surement qq chose à mettre la.
+Le fichier .xdc ou quoi
+
+|V. Développement de l'application logicielle
+-----------------------------------------------
+
+| Dans cette exercice nous devons écrire un *programme C* qui sera executé sur le microcontroleur
+| ``Microblaze`` afin d'allumer les **LEDS** en actionnant les interrupteurs.
 
 |
 |
@@ -675,4 +734,174 @@ Code écrit:
      return 0;
    } 
 	  
+|
+|
+|
 
+Une fois cette partie de faite nous devons modifer notre programme
+pour que :
+ * Les **LED** clignotent si **l'interrupteur** 0 est relevé, et
+   qu'elles affichent un motif fixe sinon.
+ * Si **l'interrupteur** 1 est relevé alors :
+   * Si on appuie sur le **bouton Left**, les 4 **LEDS** de gauches s'allument.
+   * Si on appuie sur le **bouton Right**, les 4 **LEDS** de gauches
+     s'eteignent.
+   * Si on appuie sur le **bouton Center**, on incrémente un compteur
+     modulo 16 qui s'affiche sur les 4 **LEDS** de droite. On
+     réflechira notamment à la gestion des rebonds des boutons.
+|
+
+Code écrit:
+   
+.. code:: C
+
+  #define dddd
+
+  
+
+|VI. Utilisation du contrôleur d'interruptions
+----------------------------------------------
+
+|
+
+| Nous allons à présent utiliser les **boutons poussoirs** en mode **interruption.**
+| Voici le code que nous avons écrit pour cela :
+
+
+.. code:: C
+
+  #define dddd
+
+|
+|
+|
+
+------------------------------
+
+
+   
+
+TP 3
+====
+
+
+**Conception d'IP pour le Microblaze**
+
+|
+
+| L'objectif de ce TP est de réaliser une **IP** destinée à être connectée au **Microblaze**,
+| en remplacement du contrôleur de **LED**. Le système ainsi génégé sera programmé pour réaliser quelques
+| exemples d'applications.
+
+Comme pour la partie précedente, le développement sera réalisé grace
+aux outils **Xilinx** :
+ * **Vivado** pour le développement de l'IP et la génération de la
+   plate-forme matérielle.
+ * **SDK (Software Development Kit)** pour le développement et
+   l'execution de l'application logicielle.
+
+|
+
+
+
+|I. Création d'une IP contrôleur de LED
+---------------------------------------
+
+Nous avons commencer ce TP par creer une nouvelle **IP** qui va nous
+permettre de gerer les différentes **LEDS**.
+
+Voici le module *VHDL* **my_led.vhd** qui sera rajouté dans notre
+**IP**.
+
+.. code:: VHDL
+
+
+  signal ddd : std_logic;	
+
+|
+
+ainsi que les différents parties des fichiers **my_led_v1_0.vhd** et
+**my_led_v1_0_S00_AXI.vhd** que nous avons modifié
+
+|
+
+**my_led_v1_0.vhd**
+
+.. code:: VHDL
+
+
+  signal ddd : std_logic;	
+
+|
+
+**my_led_v1_0_S00_AXI.vhd**
+
+.. code:: VHDL
+
+
+  signal ddd : std_logic;	
+  
+|
+
+.. code:: VHDL
+
+
+  signal ddd : std_logic;	
+  
+|
+|
+
+|II. Intégration de l'IP au système Microblaze
+----------------------------------------------
+
+|
+
+| Maintenant que notre nouvelle **IP** pour la gestion des ****LEDS**** est réalisée nous allons pouvoir l'intégrer
+| à notre systeme pour pouvoir l'utiliser.
+
+|
+|
+
+Voici une image de notre **IP** avec ces différentes *entrées/sorties*.
+
+.. image:: my_ip.png
+   :scale: 75 %
+   :alt: architecture du microblaze que nous allons utiliser.
+   :align: center
+
+
+|
+|
+
+Et maintenant notre **IP** rajoutée à l'interrieur de notre système.
+
+.. image:: archi_3_2.png
+   :scale: 75 %
+   :alt: architecture du microblaze que nous allons utiliser.
+   :align: center
+
+|
+|
+
+|
+|
+
+|III. Dévéloppement logiciel
+----------------------------
+
+|
+|
+
+Nous avons ensuite créer un programme C qui utilise notre IP et le
+systeme decrit précedement. Il va aller lire l'état des 4
+premiers interrupteurs et va allumer les **LEDS** par bloc de 4 si les
+interrupteurs sont actifs.
+
+|
+
+.. code:: C
+
+ #define fkfdsl
+  
+|
+|
