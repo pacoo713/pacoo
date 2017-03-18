@@ -5,7 +5,7 @@ Rapport de TP FPGA
 ==================
 
 -----------------------------
-FPGA 1 Systemes programmables
+FPGA 1 Systèmes programmables
 -----------------------------
 
 |
@@ -23,8 +23,8 @@ FPGA 1 Systemes programmables
 
 ----------------------------------------------------------
 
-Intro
-=====
+Introduction
+============
 
 
 |
@@ -71,7 +71,7 @@ Le double objectif de ce TP est de :
  * Prendre en main la chaîne de conception **Xilinx Vivado** ainsi que
    la carte FPGA **Nexys 4 DDR** sur laquelle nous travaillerons.
  * De comprendre comment fonctionne l'outil de synthèse de *Vivado* et
-   de quelle façon il va interpreter un code VHDL imprécis ou erroné.
+   de quelle façon il va interpréter un code **VHDL** imprécis ou erroné.
 
 |
 
@@ -83,8 +83,8 @@ Le double objectif de ce TP est de :
 3) Création d'un module VHDL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Dans cette première partie nous allons creer un module permetant
-d'allumer des **LEDS** selon la valeur d'interrupteurs sur la carte.
+Dans cette première partie nous allons créer un module permettant
+d'allumer des **LEDS** selon la valeur des *interrupteurs* se trouvant sur la carte.
 
 |
 
@@ -123,7 +123,7 @@ d'allumer des **LEDS** selon la valeur d'interrupteurs sur la carte.
 4) Testbench et simulation avec Modelsim
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Voici le chronogramme de la simulation de notre programme précedent.
+Voici le *chronogramme* de la simulation de notre programme précédent.
 
 .. image:: chrono_I_4.png
    :scale: 75 %
@@ -139,38 +139,38 @@ Voici le chronogramme de la simulation de notre programme précedent.
 |II. Cas d'études-Synthèse VHDL
 -------------------------------
 
-| On doit traiter 3-4 parties séparées, chaque partie est composé d'un petit système permettant
-| de réaliser une fonction simple.
-| Dans la dernière partie de cette partie nous allons les regrouper en un seul bloc qui
-| effectura une action plus grande.
+| Nous avons séparé cette étude en **4 parties** distinctes, les 3 premières parties sont composées d'un petit système permettant de réaliser une fonction simple.
+| Dans la dernière partie de cette étude nous allons tout regrouper en un seul bloc ce qui permettra d'effectuer toutes les actions.
+|
 
 
 1) Compteurs imbriqués
 ~~~~~~~~~~~~~~~~~~~~~~
 
-| Le fichier Test_CPT permet d'instancier une petite structure comprenant deux compteurs
+| Le fichier ``Test_CPT`` permet d'instancier une petite structure comprenant deux *compteurs*
 | et une gestion de l'affichage des 4 premières **LEDS**.
 |
-| Un Premier compteur *Cpt* inverse la valeur du signal ``start`` une fois tout les
-| *20000000 cycles*, initialisé à ``'0'``. (bof comme phrase..)
+| Un Premier compteur *Cpt* inverse la valeur du signal ``start`` une fois tous les
+| *20000000 cycles*, il est initialisé à ``'0'``.
 |
 | A chaque fois que le signal ``start`` vaut ``'1'`` le compteur *Cpt2* (sur 28 bits) est incrémenté.
 
 Il y a deux mode pour l'affichage sur les **LEDS**
- * Le bouton gauche est appuyé -> Les 4 **LEDS** de gauches de la cartes
+ * Le *bouton gauche* est appuyé -> Les 4 **LEDS** de gauches de la carte
    sont allumées.
 
- * Le bouton gauche est relaché -> Affichage des 4 MSB de CPT2 sur les
+ * Le *bouton gauche* est relâché -> Affichage des 4 MSB de CPT2 sur les
    4 premières **LEDS**.
 
 |
 |
 
-Il y avait plusieurs erreurs dans le code qui l'empechait de
+Il y avait plusieurs *erreurs* dans le code qui l'empêchaient de
 fonctionner normalement :
- * Le compteur *CPT* n'était pas assez grand pour atteindre 20000000,
-   le signal start n'était jamais actioné.
- * ? Je sais plus
+ * Le compteur *CPT* ne etait borné a ``20000000`` et la valeur de seuil
+   pour declencher le signal start etait de ``70000000``, *CPT* ne
+   l'atteignait jamais.
+ * ? je ne me souviens plus des autres ?
 
 |
 |
@@ -279,21 +279,21 @@ Code corrigé:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-| Le fichier Test_Impulse permet d'instancier une petite structure permettant d'utiliser
-| deux boutons. le *bouton de gauche* sert à incrementer la valeur de notre compteur, celui du
-| *centre* pour le décrementer.
-| Le compteur est un compteur sur 4 bits dont la valeur est affichée en binaire sur les 4 premières 
-| **LEDS** de la carte. Il y a aussi la **LED** 15 qui s'allume une fois une valeur seuil
-| dépasée.
+| Le fichier ``Test_Impulse`` permet d’instancier une petite structure permettant d'utiliser
+| deux boutons. le *bouton de gauche* sert à incrémenter la valeur de notre compteur, celui du
+| *centre* sert à le décrémenter.
+| Le compteur est un compteur sur **4 bits** dont la valeur est affichée en binaire sur les 4 premières 
+| **LEDS** de la carte. Il y a aussi la **LED** 15 qui s'allume une fois que la valeur définie comme seuil est
+| dépassée.
 |
-| Lors de l'implémentation, on remarque que la fonction écrite dans le fichier VHDL ne fonctione pas car
-| on constate que la synchronisation est faite par 2 signaux (*Button_L* et *Button_C*) ce qui n'est pas possible.
+| Lors de l'implémentation, nous avons remarqué que la fonction écrite dans le fichier VHDL ne pouvait pas fonctionner car
+| la synchronisation est faite par 2 signaux (*Button_L* et *Button_C*) ce qui n'est pas possible.
 |
-| Nous avons aussi rencontré un problème de fréquence. En effet la carte tournant à 100MHz nous 
-| ne pouvons pas gerer notre compteur seulement par l'appuis que l'on fait sur celui ci.
-| Nous avons eu besoin d'introduitre des ``stamps`` pour gerer le temps entre deux appuis. Chaque
-| stamp sert a limiter le temps entre deux appuis consécutifs reconnu dans l'implementation. La vitesse
-| d'incrémentation du compteur est donc bloquée à 1 appuis toutes les 2? secondes.
+| Nous avons aussi rencontré un problème de fréquence. En effet la carte tournant à *100MHz* nous 
+| ne pouvions pas gérer notre compteur seulement par l'appui que nous faisions sur celui ci.
+| Nous avons donc introduit des ``stamps`` pour gérer le temps entre deux appuis. Chaque
+| stamp a servi à limiter le temps entre deux appuis consécutifs reconnus dans l'implementation. La vitesse
+| d'incrémentation du compteur est donc bloquée à 1 appui toutes les secondes.
 
 |
 |
@@ -395,14 +395,14 @@ Code corrigé:
 ~~~~~~~~~~~
 
 
-| Le fichier Selector permet d'instancier un decodeur qui prends en entré les signaux
+| Le fichier ``Selector`` permet d'instancier un décodeur qui prend en entrée les signaux
 | de sortie (*sup* et *cout*) du fichier impulse_Count, et initialise le signal *Limit* qui affichera
-| differents motifs sur les 16 **LEDS** en fonction de ces deux signaux.
+| différents motifs sur les 16 **LEDS** en fonction de ces deux signaux.
 |
-| Il y a eu des erreur de compilation car dans le fichier originel toutes les conditions
-| du ``case`` n'étaient pas déclarées. Il a fallut retirer le commentaire indiquant
-| ``when others => NULL`` pour résoudre ce problème. il a aussi fallut rajouter au niveau de
-| l'initialisation pour les valeurs du signal Decode, la ligne suivante ``else "00"``.
+| Il y a eu des erreurs de compilation car dans le fichier initial toutes les conditions
+| du ``case`` n'étaient pas déclarées. Il a fallu retirer le commentaire indiquant
+| ``when others => NULL`` pour résoudre ce problème. il a aussi fallu rajouter au niveau de
+| l'initialisation des valeurs du signal *Decode*, la ligne suivante ``else "00"``.
 
 |
 |
@@ -498,8 +498,8 @@ Code corrigé:
 ~~~~~~
 
 
-| Dans cette étape le but est d'implémenter une machine à état qui va permettre
-| de gerer les différents états des **LEDS** (éteintes, allumés ou clignement).
+| Dans cette étape le but est d'implémenter une **machine à état** qui va permettre
+| de gérer les différents états des **LEDS** (éteintes, allumées ou clignotement).
 
   
 |
@@ -663,14 +663,14 @@ TP 2
 
 **Codesign Materiel/Logiciel**
 
-| L'objectif de ce TP est d'implémenter puis de programmer un système miste matériel/logiciel sur
-| le FPGA. Ce systèmesera basé sur le processeur embarqué *Microblaze* de *Xilinx*.
+| L'objectif de ce TP est d'implémenter puis de programmer un système mixte matériel/logiciel sur
+| le **FPGA**. Ce système sera basé sur le processeur embarqué *Microblaze* de *Xilinx*.
 
 Le développement sera réalisé grâce aux outils suivants :
  * Le mode **IP Integrator** de *Vivado* pour la génération de la
    plate-forme matérielle.
  * **SDK (Software Development Kit)** pour le développement et
-   l'execution de l'application logicielle.
+   l'exécution de l'application logicielle.
 
 |
 |
@@ -678,7 +678,7 @@ Le développement sera réalisé grâce aux outils suivants :
 |II. Spécification de la plate-forme matérielle
 -----------------------------------------------
 
-| Voici l'architecture que nous avons créee et que nous allons utiliser lors de ce TP.
+| Voici *l'architecture* que nous avons créée et que nous allons utiliser lors de ce TP.
 
 .. image:: archi_2_2.png
    :scale: 75 %
@@ -692,13 +692,13 @@ Le développement sera réalisé grâce aux outils suivants :
 |III. Développement de l'application logicielle
 -----------------------------------------------
 
-Surement qq chose à mettre la.
+Sûrement qq chose à mettre la.
 Le fichier .xdc ou quoi
 
 |V. Développement de l'application logicielle
------------------------------------------------
+---------------------------------------------
 
-| Dans cette exercice nous devons écrire un *programme C* qui sera executé sur le microcontroleur
+| Dans cette exercice nous devions écrire un *programme C* qui doit être exécuté sur le microcontrôleur
 | ``Microblaze`` afin d'allumer les **LEDS** en actionnant les interrupteurs.
 
 |
@@ -738,17 +738,18 @@ Code écrit:
 |
 |
 
-Une fois cette partie de faite nous devons modifer notre programme
+Une fois cette partie réaliser nous devions modifier notre programme
 pour que :
- * Les **LED** clignotent si **l'interrupteur** 0 est relevé, et
-   qu'elles affichent un motif fixe sinon.
+ * Les **LED** clignotent si **l'interrupteur** 0 est relevé, sinon
+  elles affichent un motif fixe .
  * Si **l'interrupteur** 1 est relevé alors :
-   * Si on appuie sur le **bouton Left**, les 4 **LEDS** de gauches s'allument.
-   * Si on appuie sur le **bouton Right**, les 4 **LEDS** de gauches
-     s'eteignent.
+   
+   * Si on appuie sur le **bouton Left**, les 4 **LEDS** de gauche s'allument.
+   * Si on appuie sur le **bouton Right**, les 4 **LEDS** de gauche
+     s'éteignent.
    * Si on appuie sur le **bouton Center**, on incrémente un compteur
-     modulo 16 qui s'affiche sur les 4 **LEDS** de droite. On
-     réflechira notamment à la gestion des rebonds des boutons.
+     modulo 16 qui s'affiche sur les 4 **LEDS** de droite. Nous avons
+     réfléchi notamment à la gestion des rebonds des boutons.
 |
 
 Code écrit:
@@ -759,8 +760,8 @@ Code écrit:
 
   
 
-|VI. Utilisation du contrôleur d'interruptions
-----------------------------------------------
+|VI. Utilisation du contrôleur d'interruption
+---------------------------------------------
 
 |
 
@@ -790,15 +791,15 @@ TP 3
 |
 
 | L'objectif de ce TP est de réaliser une **IP** destinée à être connectée au **Microblaze**,
-| en remplacement du contrôleur de **LED**. Le système ainsi génégé sera programmé pour réaliser quelques
+| en remplacement du contrôleur de **LED**. Le système ainsi généré sera programmé pour réaliser quelques
 | exemples d'applications.
 
-Comme pour la partie précedente, le développement sera réalisé grace
+Comme pour la partie précédente, le développement sera réalisé grâce
 aux outils **Xilinx** :
  * **Vivado** pour le développement de l'IP et la génération de la
    plate-forme matérielle.
  * **SDK (Software Development Kit)** pour le développement et
-   l'execution de l'application logicielle.
+   l'exécution de l'application logicielle.
 
 |
 
@@ -807,10 +808,10 @@ aux outils **Xilinx** :
 |I. Création d'une IP contrôleur de LED
 ---------------------------------------
 
-Nous avons commencer ce TP par creer une nouvelle **IP** qui va nous
-permettre de gerer les différentes **LEDS**.
+Nous avons commencé ce TP en créant une nouvelle **IP**, ceci pour nous
+permettre de gérer les différentes **LEDS**.
 
-Voici le module *VHDL* **my_led.vhd** qui sera rajouté dans notre
+Voici le module *VHDL* **my_led.vhd** qui a été rajouté à notre
 **IP**.
 
 .. code:: VHDL
@@ -820,8 +821,8 @@ Voici le module *VHDL* **my_led.vhd** qui sera rajouté dans notre
 
 |
 
-ainsi que les différents parties des fichiers **my_led_v1_0.vhd** et
-**my_led_v1_0_S00_AXI.vhd** que nous avons modifié
+ les différents parties des fichiers **my_led_v1_0.vhd** et
+**my_led_v1_0_S00_AXI.vhd** ont aussi été modifiées
 
 |
 
@@ -857,7 +858,7 @@ ainsi que les différents parties des fichiers **my_led_v1_0.vhd** et
 |
 
 | Maintenant que notre nouvelle **IP** pour la gestion des ****LEDS**** est réalisée nous allons pouvoir l'intégrer
-| à notre systeme pour pouvoir l'utiliser.
+| à notre système pour pouvoir l'utiliser.
 
 |
 |
@@ -873,7 +874,7 @@ Voici une image de notre **IP** avec ces différentes *entrées/sorties*.
 |
 |
 
-Et maintenant notre **IP** rajoutée à l'interrieur de notre système.
+Et l' **IP** rajoutée à l'intérieur de notre système.
 
 .. image:: archi_3_2.png
    :scale: 75 %
@@ -886,14 +887,14 @@ Et maintenant notre **IP** rajoutée à l'interrieur de notre système.
 |
 |
 
-|III. Dévéloppement logiciel
+|III. Développement logiciel
 ----------------------------
 
 |
 |
 
-Nous avons ensuite créer un programme C qui utilise notre IP et le
-systeme decrit précedement. Il va aller lire l'état des 4
+Nous avons ensuite créé un programme C qui utilise notre IP et le
+système décrit précédemment. Il va aller lire l'état des 4
 premiers interrupteurs et va allumer les **LEDS** par bloc de 4 si les
 interrupteurs sont actifs.
 
