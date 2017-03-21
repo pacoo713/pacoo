@@ -125,12 +125,20 @@ d'allumer des **LEDS** selon la valeur des *interrupteurs* se trouvant sur la ca
 
 Voici le *chronogramme* de la simulation de notre programme précédent.
 
-.. image:: chrono_I_4.png
+.. image:: chrono_TP1.png
    :scale: 75 %
    :alt: chronogramme du programme du 3)
    :align: center
 
 
+|
+
+On peut remarquer que les bits de sortie (*LED*) correspondent bien à
+ce que l'on cherchait à faire.
+	   
+|
+|
+|
 
 ----------------------------
 
@@ -170,8 +178,9 @@ fonctionner normalement :
  * Le compteur *CPT* ne etait borné a ``20000000`` et la valeur de seuil
    pour declencher le signal start etait de ``70000000``, *CPT* ne
    l'atteignait jamais.
- * ? je ne me souviens plus des autres ?
 
+|
+|
 |
 |
 
@@ -229,7 +238,6 @@ Code corrigé:
    end process; 
 
 |
-|
 
 .. code:: VHDL
    
@@ -255,7 +263,6 @@ Code corrigé:
    end process; 
 
 |
-|
 
 .. code:: VHDL
 	  
@@ -269,10 +276,6 @@ Code corrigé:
      
  end Behavioral; 
 
-|
-|
-|
-|
 |
 
 2) Compteur d'impulsions
@@ -380,14 +383,6 @@ Code corrigé:
   
  end Behavioral;
 
-|
-|
-|
-|
-|
-|
-|
-|
 |
 
 
@@ -649,12 +644,8 @@ Code corrigé:
 
 
 |
-|
-|
 
 ------------------------------
-
-
    
 
 TP 2
@@ -680,7 +671,7 @@ Le développement sera réalisé grâce aux outils suivants :
 
 | Voici *l'architecture* que nous avons créée et que nous allons utiliser lors de ce TP.
 
-.. image:: archi_2_2.png
+.. image:: design_TP2.png
    :scale: 75 %
    :alt: architecture du microblaze que nous allons utiliser.
    :align: center
@@ -756,7 +747,83 @@ Code écrit:
    
 .. code:: C
 
-  #define dddd
+  int i = 0;
+  int cpt;
+  
+  /* declarer GPIO */
+  XGpio led, button;
+  /* registre lecture ecriture  */
+  u32 lecture = 0, ecriture = 0;
+  
+  /* initiliser la struct XGPIO led/switch */
+  XGpio_Initialize (&led, 1);
+  
+  /* initiliser la struct XGPIO  boutons */
+  XGpio_Initialize (&button, 0);
+  
+  
+  /* fixer la direction des switch (entrée) */
+  XGpio_SetDataDirection (&led, 1, 1);
+  
+  /* fixer la direction des led (sortie) */
+  XGpio_SetDataDirection (&led, 2, 0);
+  
+  /* fixer la direction des bouton (entrée) */
+  XGpio_SetDataDirection (&button, 1, 1);
+  
+   while (1) {
+   
+     /*  lire la valeur des 4 switchs  */
+     lecture = XGpio_DiscreteRead (&led, 1);
+   
+     if ( (lecture & 0x1) == 1) {
+       /* si interrupteur 0 est levé */
+   
+       /* ecrire un motif sur led */
+       XGpio_DiscreteWrite (&led, 2, 0xF);
+   
+   
+       for ( i = 0 ; i < 5000000000 ; i++) {}
+       
+       /* ecrire un motif sur led */
+       XGpio_DiscreteWrite (&led, 2, 0x0);
+       
+       
+     } else if ( ((lecture>>1) & 0x1) == 1   ){
+       /* si intterupteur 1 est levé*/
+
+       /*  lire la valeur des 4 switchs  */
+       lecture = XGpio_DiscreteRead (&button, 1);
+
+       
+       /* si bouton droit appuyé */
+       if (lecture & 0x1 == 1) {
+         /* eteindre les led */
+         XGpio_DiscreteWrite (&led, 2, 0x1);
+       }
+       
+       /* si bouton gauche appuyé */
+       else if ( ((lecture >> 1) & 0x1  == 1) ) {
+         /* allumer les led */
+         XGpio_DiscreteWrite (&led, 2, 0xF);
+       }
+   
+       /* si bouton du centre appuyé */
+       else if  ((lecture >> 2) & 0x1 == 1) {
+         /* incrementer cpt */
+         cpt = (cpt + 1) % 16;
+         XGpio_DiscreteWrite (&led, 2, cpt);
+       }
+
+     } else {
+       /* le reste */
+       /* ecrire un motif sur led */
+       XGpio_DiscreteWrite (&led, 2, 0x3);
+     }
+   }
+   return 0;
+ }
+
 
   
 
@@ -771,7 +838,95 @@ Code écrit:
 
 .. code:: C
 
-  #define dddd
+ int main (int argc, char **argv ) {
+
+ int cpt = 0;
+
+ /* registre lecture ecriture  */
+ u32 ecriture = 0;
+
+ /* Initialize the interuption */
+ XIntc_Initialize (&Intc, INTERUPT_ID);
+ 
+ /* initiliser la struct XGPIO led/switch */
+ XGpio_Initialize (&led, 1);
+ 
+ /* initiliser la struct XGPIO  boutons */
+ XGpio_Initialize (&button, BUTTON_ID);
+ 
+ 
+ /* fixer la direction des switch (entrée) */
+ XGpio_SetDataDirection (&led, 1, 1);
+ 
+ /* fixer la direction des led (sortie) */
+ XGpio_SetDataDirection (&led, 2, 0);
+ 
+ /* fixer la direction des bouton (entrée) */
+ XGpio_SetDataDirection (&button, 1, 1);
+ 
+
+ GpioIntrExample (&Intc, &button, BUTTON_ID, INTERUPT_CHANNEL, INTERUPT_CHANNEL);
+ 
+ 
+ while (1) {
+ 
+   /*  lire la valeur des leds  */
+   lecture = XGpio_DiscreteRead (&led, 1);
+ 
+   if ( (lecture & 0x1) == 1) {
+    /* si interrupteur 0 est levé */
+ 
+	  /* ecrire un motif sur led */
+	  XGpio_DiscreteWrite (&led, 2, 0xF);
+    
+	  delay(led);
+	  
+	  /* ecrire un motif sur led */
+	  XGpio_DiscreteWrite (&led, 2, 0x0);
+	  
+	  delay(led);
+	  
+	  
+	  
+    } else if ( ((lecture>>1) & 0x1) == 1   ){
+       /* si intterupteur 1 est levé*/
+       
+       /* si bouton droit appuyé */
+       if (IntrFlag == 1) {
+         IntrFlag = 0;
+         /* eteindre les led */
+         XGpio_DiscreteWrite (&led, 2, 0x1);
+       }
+       
+       /* si bouton gauche appuyé */
+       else if ( (IntrFlag == 2) ) {
+         IntrFlag = 0;
+         /* allumer les led */
+         XGpio_DiscreteWrite (&led, 2, 0xF);
+       }
+   
+       /* si bouton du centre appuyé */
+       else if  (IntrFlag == 3) {
+         IntrFlag = 0;
+         /* incrementer cpt */
+         cpt = (cpt + 1) % 16;
+       
+         XGpio_DiscreteWrite (&led, 2, cpt);
+       
+         delay (led);
+       }
+       
+       } else {
+         /* le reste */
+         /* ecrire un motif sur led */
+         XGpio_DiscreteWrite (&led, 2, IntrFlag);//0x3);
+       }
+       
+       }
+       return 0;
+ }
+
+
 
 |
 |
@@ -808,21 +963,45 @@ aux outils **Xilinx** :
 |I. Création d'une IP contrôleur de LED
 ---------------------------------------
 
+|
+|
+
 Nous avons commencé ce TP en créant une nouvelle **IP**, ceci pour nous
 permettre de gérer les différentes **LEDS**.
 
-Voici le module *VHDL* **my_led.vhd** qui a été rajouté à notre
-**IP**.
+| Voici le module *VHDL* **my_led.vhd** qui a été rajouté à notre **IP**, qui allume les **LEDS**
+| 4 par 4 selon le(s) switch levé(s).
+|
+|
 
 .. code:: VHDL
 
+ library IEEE;
+ use IEEE.STD_LOGIC_1164.ALL;
 
-  signal ddd : std_logic;	
+ entity myip_led is
+  port (
+    sw_state : in Std_Logic_vector (3 downto 0);
+    led : out Std_Logic_Vector (15 downto 0)
+    );
+ end myip_led;
+
+
+ architecture behavioral of myip_led is 
+ begin
+  
+  led (3 downto 0)   <= "1111" when sw_state(0) = '1' else "0000";
+  led (7 downto 4)   <= "1111" when sw_state(1) = '1' else "0000";
+  led (11 downto 8)  <= "1111" when sw_state(2) = '1' else "0000";
+  led (15 downto 12) <= "1111" when sw_state(3) = '1' else "0000";
+  
+ end behavioral;       
 
 |
 
- les différents parties des fichiers **my_led_v1_0.vhd** et
-**my_led_v1_0_S00_AXI.vhd** ont aussi été modifiées
+
+| Voici aussi les différents parties des fichiers **my_led_v1_0.vhd** et  **my_led_v1_0_S00_AXI.vhd** 
+| que nous avons modifiés.
 
 |
 
@@ -830,24 +1009,82 @@ Voici le module *VHDL* **my_led.vhd** qui a été rajouté à notre
 
 .. code:: VHDL
 
+   port (
+     -- Users to add ports here
+   
+     led : out Std_Logic_Vector (15 downto 0);
 
-  signal ddd : std_logic;	
+   -- User ports ends
+     -- Do not modify the ports beyond this line
+	  
+|
 
+.. code:: VHDL
+	  
+   -- component declaration
+   component myip_led_v1_0_S00_AXI is
+   generic (
+     C_S_AXI_DATA_WIDTH	: integer	:= 32;
+     C_S_AXI_ADDR_WIDTH	: integer	:= 4
+   );
+   port (
+     led        : out Std_Logic_Vector (15 downto 0);
+     S_AXI_ACLK	: in std_logic;
+     .
+     .
+     
+|
+
+.. code:: VHDL
+
+   port map (
+     led                => led,
+     S_AXI_ACLK	        => s00_axi_aclk,
+     S_AXI_ARESETN	=> s00_axi_aresetn,
+     .
+     .
+
+|
 |
 
 **my_led_v1_0_S00_AXI.vhd**
 
 .. code:: VHDL
 
+   port (
+     -- Users to add ports here
+     
+     led : out Std_Logic_Vector (15 downto 0);
+     
+     -- User ports ends
+     -- Do not modify the ports beyond this line
 
-  signal ddd : std_logic;	
-  
 |
 
 .. code:: VHDL
 
 
-  signal ddd : std_logic;	
+   signal sw_state         : Std_Logic_vector (3 downto 0);
+
+   begin
+   -- I/O Connections assignments
+
+
+|
+
+.. code:: VHDL
+
+   -- Add user logic here
+
+   LO : entity work.myip_led port map (sw_state, led);
+
+   sw_state (0) <= slv_reg0(0);
+   sw_state (1) <= slv_reg0(1);
+   sw_state (2) <= slv_reg1(0);
+   sw_state (3) <= slv_reg1(1);
+            
+   -- User logic ends
+   
   
 |
 |
@@ -902,7 +1139,57 @@ interrupteurs sont actifs.
 
 .. code:: C
 
- #define fkfdsl
+ #include "xgpio.h"
+ #include "myip_led.h"
+ #include "xparameters.h"
+
+ #define SW_ID XPAR_SW_DEVICE_ID
+ #define BASE_ADDR XPAR_MYIP_LED_0_S00_AXI_BASEADDR
+
+ int main () {
+  XGpio sw;
+  u32 lecture;
+  u32 masque = 0;
+
+  /* initiliser la struct XGPIO led/switch */
+  XGpio_Initialize (&sw, SW_ID);
+
+  /* fixer la direction des switch (entrée) */
+  XGpio_SetDataDirection (&sw, 1, 1);
+
+  while (1) {
+    masque  = 0x0;
+
+    /*  lire la valeur des leds  */
+    lecture = XGpio_DiscreteRead (&sw, 1);
+
+
+    /* écriture dans le reg 0  */
+    if ( (lecture & 0x1) == 1) {
+      masque |= 0x1;
+    }
+    if ( (lecture>>1 & 0x1) == 0x1) {
+      masque |= 0x2;
+    }
+    MYIP_LED_mWriteReg (BASE_ADDR, MYIP_LED_S00_AXI_SLV_REG0_OFFSET, masque);
+
+    masque = 0;
+    
+    /* écriture dans le reg 1  */
+    if ( (lecture>>2 & 0x1) == 1) {
+      masque |= 0x1;
+    }
+    if ( (lecture>>3 & 0x1) == 0x1) {
+      masque |= 0x2;
+    }
+    MYIP_LED_mWriteReg (BASE_ADDR, MYIP_LED_S00_AXI_SLV_REG1_OFFSET, masque);
+
+
+    
+  }  
+  return 0;
+ }
+
   
 |
 |
