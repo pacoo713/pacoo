@@ -29,13 +29,13 @@ Introduction
 
 |
 |
+| Lors de ce ces différents TP nous avons commencé par prendre en main le logiciel
+| **Vivado** ainsi que la carte **FPGA** ``Nexys 4DDR``.
+| 
+| Puis nous avons réalisé différents scénarios pour mettre en place ce que nous avons vu. Et nous 
+| avons continué sur la prise en main du *microcontroleur* **MicroBlaze** et la gestions des interruptions. 
 |
-|
-|
-|
-|
-|
-|
+| Une fois tous ces *TPs* de réalisés nous avons les connaisances neccesaires pour pouvoir mmener à terme le projet.
 |
 |
 |
@@ -175,7 +175,7 @@ Il y a deux mode pour l'affichage sur les **LEDS**
 
 Il y avait plusieurs *erreurs* dans le code qui l'empêchaient de
 fonctionner normalement :
- * Le compteur *CPT* ne etait borné a ``20000000`` et la valeur de seuil
+ * Le compteur *CPT* était borné a ``20000000`` et la valeur de seuil
    pour declencher le signal start etait de ``70000000``, *CPT* ne
    l'atteignait jamais.
 
@@ -278,8 +278,8 @@ Code corrigé:
 
 |
 
-2) Compteur d'impulsions
-~~~~~~~~~~~~~~~~~~~~~~~~
+2) Compteur d'impulsion
+~~~~~~~~~~~~~~~~~~~~~~~
 
 
 | Le fichier ``Test_Impulse`` permet d’instancier une petite structure permettant d'utiliser
@@ -295,7 +295,7 @@ Code corrigé:
 | Nous avons aussi rencontré un problème de fréquence. En effet la carte tournant à *100MHz* nous 
 | ne pouvions pas gérer notre compteur seulement par l'appui que nous faisions sur celui ci.
 | Nous avons donc introduit des ``stamps`` pour gérer le temps entre deux appuis. Chaque
-| stamp a servi à limiter le temps entre deux appuis consécutifs reconnus dans l'implementation. La vitesse
+| stamp a servi à limiter le temps entre deux appuis consécutifs reconnus dans l'implémentation. La vitesse
 | d'incrémentation du compteur est donc bloquée à 1 appui toutes les secondes.
 
 |
@@ -599,7 +599,9 @@ Code corrigé:
 	                   if Mode = "10" then
 			      EF <= CLIGN_OFF; 
 	                   elsif Mode = "11" then
-			      EF <= LED_ON; 
+			      EF <= LED_ON;
+			   else
+			      EF <= LED_OFF;
 	                   end if; 
 	  
 	  -- **LEDS** Clignotement - (Eteint) 
@@ -610,10 +612,12 @@ Code corrigé:
 			      EF <= LED_OFF; 
                            elsif Mode = "11" then
 			      EF <= LED_ON; 
+			   else
+			      EF <= CLIGN_OFF;
                            end if; 
-                           if Cpt = Seuil then
+			   if Cpt = Seuil then
 			      EF <= LED_ON; 
-                           end if; 
+			   end if; 
 
 	  -- **LEDS** Allumées 
 	  -- On Reste dans cet état tant que Mode est à 11 
@@ -624,6 +628,8 @@ Code corrigé:
 			      EF <= CLIGN_ON; 
 			   elsif Mode = "00" then
 			      EF <= LED_OFF; 
+			   else
+			      EF <= LED_ON;
 			   end if; 
 
 	  -- **LEDS** Clignotement - (Allumé) 
@@ -633,6 +639,8 @@ Code corrigé:
 			      EF <= LED_OFF; 
 			   elsif Mode = "11" then
 			      EF <= LED_ON; 
+			   else
+			      EF <= CLIGN_ON;
 			   end if; 
 			   if Cpt = Seuil then
 			      EF <= LED_OFF; 
@@ -644,6 +652,10 @@ Code corrigé:
 
 
 |
+Conclusion
+----------
+
+Nous avons durant ce TP été confrontés à plusieurs problèmes, ce qui nous a obligé à entrer dans le code pour en comprendre le fonctionnement. Nous avons réussi à implémenter une machine à état gérant des Leds.
 
 ------------------------------
    
@@ -664,32 +676,30 @@ Le développement sera réalisé grâce aux outils suivants :
    l'exécution de l'application logicielle.
 
 |
-|
 
 |II. Spécification de la plate-forme matérielle
 -----------------------------------------------
 
 | Voici *l'architecture* que nous avons créée et que nous allons utiliser lors de ce TP.
+|
 
 .. image:: design_TP2.png
-   :scale: 75 %
+   :scale: 60 %
    :alt: architecture du microblaze que nous allons utiliser.
    :align: center
 
 
 |
 |
+|
+|
+|
 
-|III. Développement de l'application logicielle
------------------------------------------------
-
-Sûrement qq chose à mettre la.
-Le fichier .xdc ou quoi
 
 |V. Développement de l'application logicielle
 ---------------------------------------------
 
-| Dans cette exercice nous devions écrire un *programme C* qui doit être exécuté sur le microcontrôleur
+| Dans cet exercice nous devions écrire un *programme C* qui devait être exécuté sur le microcontrôleur
 | ``Microblaze`` afin d'allumer les **LEDS** en actionnant les interrupteurs.
 
 |
@@ -729,7 +739,7 @@ Code écrit:
 |
 |
 
-Une fois cette partie réaliser nous devions modifier notre programme
+Une fois cette partie réalisée nous devions modifier notre programme
 pour que :
  * Les **LED** clignotent si **l'interrupteur** 0 est relevé, sinon
   elles affichent un motif fixe .
@@ -741,6 +751,7 @@ pour que :
    * Si on appuie sur le **bouton Center**, on incrémente un compteur
      modulo 16 qui s'affiche sur les 4 **LEDS** de droite. Nous avons
      réfléchi notamment à la gestion des rebonds des boutons.
+|
 |
 
 Code écrit:
@@ -1099,8 +1110,21 @@ permettre de gérer les différentes **LEDS**.
 
 |
 |
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
 
 Voici une image de notre **IP** avec ces différentes *entrées/sorties*.
+
+|
+|
 
 .. image:: my_ip.png
    :scale: 75 %
@@ -1110,10 +1134,15 @@ Voici une image de notre **IP** avec ces différentes *entrées/sorties*.
 
 |
 |
+|
+|
+|
+|
+
 
 Et l' **IP** rajoutée à l'intérieur de notre système.
 
-.. image:: archi_3_2.png
+.. image:: design_TP3.png
    :scale: 75 %
    :alt: architecture du microblaze que nous allons utiliser.
    :align: center
@@ -1193,3 +1222,10 @@ interrupteurs sont actifs.
   
 |
 |
+**Conclusion**
+
+| Nous avons réussi à programmer notre gestion automatique des **LEDS** en apprenant à
+| nous servir de l'outil de synthèse *Vivado*, à *débogger* un programme,
+| et à ajouter les morceaux de programme C permettant de mettre en place
+| notre gestion de **LEDS**.
+
