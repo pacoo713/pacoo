@@ -32,10 +32,10 @@ Introduction
 | Lors de ce ces différents TP nous avons commencé par prendre en main le logiciel
 | **Vivado** ainsi que la carte **FPGA** ``Nexys 4DDR``.
 | 
-| Puis nous avons réalisé différents scénarios pour mettre en place ce que nous avons vu. Et nous 
-| avons continué sur la prise en main du *microcontroleur* **MicroBlaze** et la gestions des interruptions. 
+| Puis nous avons réalisé différents scénarios pour mettre en place ce que nous avions vu en cours. Nous
+| avons ensuite, continué sur la prise en main du *microcontroleur* **MicroBlaze** et la gestions des interruptions.
 |
-| Une fois tous ces *TPs* de réalisés nous avons les connaisances neccesaires pour pouvoir mmener à terme le projet.
+| Une fois tous ces *TPs* réalisés nous avions les connaissances néccesaires nous permettant de  mener à terme le projet.
 |
 |
 |
@@ -134,7 +134,7 @@ Voici le *chronogramme* de la simulation de notre programme précédent.
 |
 
 On peut remarquer que les bits de sortie (*LED*) correspondent bien à
-ce que l'on cherchait à faire.
+ce que l'on cherchait à obtenir.
 	   
 |
 |
@@ -148,7 +148,7 @@ ce que l'on cherchait à faire.
 -------------------------------
 
 | Nous avons séparé cette étude en **4 parties** distinctes, les 3 premières parties sont composées d'un petit système permettant de réaliser une fonction simple.
-| Dans la dernière partie de cette étude nous allons tout regrouper en un seul bloc ce qui permettra d'effectuer toutes les actions.
+| Dans la dernière partie de cette étude nous avons tout regroupé en un seul bloc ce qui nous a permis d'effectuer toutes les actions demandées.
 |
 
 
@@ -163,8 +163,8 @@ ce que l'on cherchait à faire.
 |
 | A chaque fois que le signal ``start`` vaut ``'1'`` le compteur *Cpt2* (sur 28 bits) est incrémenté.
 
-Il y a deux mode pour l'affichage sur les **LEDS**
- * Le *bouton gauche* est appuyé -> Les 4 **LEDS** de gauches de la carte
+Il y a deux modes pour l'affichage sur les **LEDS**
+ * Le *bouton gauche* est appuyé -> Les 4 **LEDS** de gauche de la carte
    sont allumées.
 
  * Le *bouton gauche* est relâché -> Affichage des 4 MSB de CPT2 sur les
@@ -290,7 +290,7 @@ Code corrigé:
 | dépassée.
 |
 | Lors de l'implémentation, nous avons remarqué que la fonction écrite dans le fichier VHDL ne pouvait pas fonctionner car
-| la synchronisation est faite par 2 signaux (*Button_L* et *Button_C*) ce qui n'est pas possible.
+| la synchronisation était faite par 2 signaux (*Button_L* et *Button_C*) ce qui n'est pas possible.
 |
 | Nous avons aussi rencontré un problème de fréquence. En effet la carte tournant à *100MHz* nous 
 | ne pouvions pas gérer notre compteur seulement par l'appui que nous faisions sur celui ci.
@@ -1143,7 +1143,7 @@ Voici une image de notre **IP** avec ces différentes *entrées/sorties*.
 Et l' **IP** rajoutée à l'intérieur de notre système.
 
 .. image:: design_TP3.png
-   :scale: 75 %
+   :scale: 100 %
    :alt: architecture du microblaze que nous allons utiliser.
    :align: center
 
