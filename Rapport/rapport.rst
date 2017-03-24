@@ -28,24 +28,19 @@ Introduction
 
 
 |
+| Ce document présente les 3 TPs de du cours de **FPGA** que nous avons réalisé ce semestre
+| Le rapport commence par montrer notre premier TP et comment nous avons pris en mains le logiciel 
+| **Vivado** pour écrires des *IP* et réaliser des tests.
+| Puis nous avons vu dans le deuxieme TP de quelle façon se servir du microcontroleur
+| embarqué sur la carte.
+| Et enfin nous avons terminé par regrouper tout cela pendant le 3eme TP pour réaliser une petite architecture. 
+| Lors de ce ces différents TP nous avons commencé par prendre en main le logiciel **Vivado** ainsi que la carte
+|  **FPGA** ``Nexys 4DDR``.
 |
-| Lors de ce ces différents TP nous avons commencé par prendre en main le logiciel
-| **Vivado** ainsi que la carte **FPGA** ``Nexys 4DDR``.
-| 
 | Puis nous avons réalisé différents scénarios pour mettre en place ce que nous avions vu en cours. Nous
-| avons ensuite, continué sur la prise en main du *microcontroleur* **MicroBlaze** et la gestions des interruptions.
+| avons ensuite, continué sur la prise en main du *microcontroleur* **MicroBlaze** et la gestion des interruptions.
 |
 | Une fois tous ces *TPs* réalisés nous avions les connaissances néccesaires nous permettant de  mener à terme le projet.
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
 |
 |
 |
@@ -78,13 +73,30 @@ Le double objectif de ce TP est de :
 |I. prise en main du modèle
 ---------------------------
 
-|
+La prise en main du modèle s'est effectuée en plusieurs étapes:
+ - *création* d'un module **VHDL** pour comprendre de quelle façon gerer les
+   entrées sorties.
+ - *Testbench* et *simulation* avec **Modelsim** pour verifier comme
+   implementation avant de l'envoyer sur la carte.
 
 3) Création d'un module VHDL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Dans cette première partie nous allons créer un module permettant
+Dans cette première partie, nous allons créer un module permettant
 d'allumer des **LEDS** selon la valeur des *interrupteurs* se trouvant sur la carte.
+
+|
+
+Le modèle VHDL est découpé en 2 parties :
+ * la partie *port* qui permet de déclarer l'interface du modèle
+ * la partie *architecture Behavioral* qui permet de définir le comportement du modèle, c'est à dire la relation entre les entrées et les sorties du modèle.
+
+|
+
+
+Dans notre modèle, il y a 3 switchs nommé SW0, S1 et SW2 en entrée et un tableau de contenant la commande de 3 leds.
+Il faut expliquer pourquoi un tableau et non pas 3 leds LED1, LED2 et LED3.
+Les led LED0 et LED1 sont commandées respectivement par les interupteurs SW0 et SW1. La led LED2 est commandé lorsque les 3 interupteurs sont à l'état 1.
 
 |
 
@@ -114,14 +126,53 @@ d'allumer des **LEDS** selon la valeur des *interrupteurs* se trouvant sur la ca
 
 |
 |
-|
-|
-|
-|
-|
+ 
 
 4) Testbench et simulation avec Modelsim
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+| 
+Le Testbench va consister à commander successivement les interupteurs SW0, SW1 et SW2. Ceci permet de voir les 3 leds
+s'allumer successivement. Puis l'interupteur SW0 est éteint, donc les led LED0 et LED2 doivent s'éteindre.
+
+|
+
+Le code du test :
+
+.. code :: VHDL
+
+
+ library IEEE;
+ use IEEE.STD_LOGIC_1164.ALL;
+
+ entity TB_Test is
+ end TB_Test;
+
+ architecture Behavioral of TB_Test is
+    
+   -- Signaux pour le port map du module Ã  tester
+   signal SW0 : STD_LOGIC;
+   signal SW1 : STD_LOGIC;
+   signal SW2 : STD_LOGIC; 
+   signal LED : STD_LOGIC_VECTOR (2 downto 0);
+
+  begin
+
+    -- Instanciation du Module Test
+    l0: entity work.Test
+    port map(SW0,SW1,SW2,LED);
+
+    -- Evolution des Entrees
+    SW0 <= '0', '1' after 200 ns, '0' after 800 ns;
+    SW1 <= '0', '1' after 400 ns;
+    SW2 <= '0', '1' after 600 ns;
+
+   end Behavioral;
+
+|
+|
+|
+|
 
 Voici le *chronogramme* de la simulation de notre programme précédent.
 
@@ -133,8 +184,8 @@ Voici le *chronogramme* de la simulation de notre programme précédent.
 
 |
 
-On peut remarquer que les bits de sortie (*LED*) correspondent bien à
-ce que l'on cherchait à obtenir.
+On peut remarquer que les bits de sortie (*LED*) correspondent bien au
+comportement que l'on cherchait à obtenir.
 	   
 |
 |
@@ -175,8 +226,8 @@ Il y a deux modes pour l'affichage sur les **LEDS**
 
 Il y avait plusieurs *erreurs* dans le code qui l'empêchaient de
 fonctionner normalement :
- * Le compteur *CPT* était borné a ``20000000`` et la valeur de seuil
-   pour declencher le signal start etait de ``70000000``, *CPT* ne
+ * Le compteur *CPT* était borné à ``20000000`` et la valeur de seuil
+   pour déclencher le signal start était de ``70000000``, *CPT* ne
    l'atteignait jamais.
 
 |
@@ -289,8 +340,9 @@ Code corrigé:
 | **LEDS** de la carte. Il y a aussi la **LED** 15 qui s'allume une fois que la valeur définie comme seuil est
 | dépassée.
 |
-| Lors de l'implémentation, nous avons remarqué que la fonction écrite dans le fichier VHDL ne pouvait pas fonctionner car
-| la synchronisation était faite par 2 signaux (*Button_L* et *Button_C*) ce qui n'est pas possible.
+| Lors de l'implémentation, nous avons remarqué que la fonction écrite dans le fichier VHDL 
+| ne pouvait pas fonctionner car la synchronisation était faite par 2 signaux (*Button_L* et *Button_C*) 
+| ce qui n'est pas possible.
 |
 | Nous avons aussi rencontré un problème de fréquence. En effet la carte tournant à *100MHz* nous 
 | ne pouvions pas gérer notre compteur seulement par l'appui que nous faisions sur celui ci.
@@ -298,7 +350,7 @@ Code corrigé:
 | stamp a servi à limiter le temps entre deux appuis consécutifs reconnus dans l'implémentation. La vitesse
 | d'incrémentation du compteur est donc bloquée à 1 appui toutes les secondes.
 
-|
+
 |
 
 Code corrigé:
@@ -652,6 +704,7 @@ Code corrigé:
 
 
 |
+
 Conclusion
 ----------
 
@@ -938,10 +991,10 @@ Code écrit:
  }
 
 
-
+|  **Conclusion**
 |
-|
-|
+| Nous avons vu dans ce deuxieme *TP* l'utilisation du **Microblaze** et de quelle façon l'interfacer avec
+| Le code matériel de la *carte* 
 
 ------------------------------
 
