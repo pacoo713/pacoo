@@ -77,8 +77,7 @@ begin
   
   process (clk)
 
-    variable cpt : integer range 0 to 102 := 0;
-    variable byte_cpt : integer range 0 to 8 := 0;
+    variable cpt : integer range 0 to 102 := 8;
     
   begin
     if rising_edge (clk) then
@@ -90,21 +89,21 @@ begin
         -- test if a send is done
         if (end_0 or end_1) =  '1' then
           report "un octet envoyé : " & STD_LOGIC'image(end_0) & STD_LOGIC'image(end_1); 
-          cpt := cpt + 1;
+          cpt := cpt - 1;
           start_0 <=  '0';
           start_1 <=  '0';
         end if;
 
       -- if wa have send the all byte
-      if cpt = 8 then
+      if cpt = 0 then
         -- send a end signal and reset cpt
         end_b <= '1';
-        cpt := 0;
+        cpt := 8;
         report "fin envoie octet";
       else
         if start_b = '1' then
           
-          if byte(cpt) = '1' then
+          if byte(cpt-1) = '1' then
             -- send a 1
             start_1 <= '1';
           else
@@ -114,13 +113,12 @@ begin
           end if;
           
         else
-          --if no request stay to 0
-          byte_cpt := 0;
-          cpt      := 0;
+          --if no request stay to 8
+          cpt      := 8;
         --end if start_b
         end if;
         
-      -- end id cpt = 8
+      -- end id cpt = 0
       end if;
 -- end rising_edge
     end if;

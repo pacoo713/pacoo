@@ -6,15 +6,18 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity sequencer is
   Port (
-    clk      : in  STD_LOGIC;
+    clk       : in  STD_LOGIC;
 
-    go       : in  STD_LOGIC := '0';
+    go        : in  STD_LOGIC := '0';
     
-    addr     : in  Std_Logic_Vector (7 downto 0);
-    data     : in  Std_Logic_Vector (7 downto 0);
-    
-    
-    pulse    : out STD_LOGIC := '0'
+    addr      : in  Std_Logic_Vector (7 downto 0);
+    feat      : in  Std_Logic_Vector (7 downto 0);
+    speed     : in  Std_Logic_Vector (7 downto 0);
+    which     : in  Std_Logic;
+    idle      : in  Std_Logic;    
+
+    done      : out Std_Logic;
+    pulse     : out STD_LOGIC := '0'
     );      
 end sequencer;
 
@@ -138,7 +141,7 @@ begin
   process (clk)
 
     -- serve to kown if we have start or not
-    variable step : integer range 0 to 7 := 0;
+    variable step : integer range 0 to 8 := 0;
 
   begin
 
@@ -146,9 +149,13 @@ begin
     
     if rising_edge (clk) then
 
+     -- done <= '0';
+      
       -- if we have
       if go = '1' then
-
+        step := 0;
+      end if;
+        
         report "step   :" & integer'image(step);
         
         case step is
@@ -161,6 +168,7 @@ begin
             if end_p = '1' then
               report "dans le if :" & STD_LOGIC'image(end_p);
               start_p <= '0';
+              done <= '0';
               step := 1;
             end if;
 
@@ -177,7 +185,11 @@ begin
           when 2 => 
             -- send addr
             start_b <= '1';
-            byte <= addr;
+            if idle = '1' then
+              byte <= "11111111";
+            else      
+              byte <= addr;
+            end if;
             -- when the byte is sent, send a 0
             if end_b = '1' then
               start_b <= '0';
@@ -197,7 +209,11 @@ begin
           when 4 => 
             -- send data
             start_b <= '1';
-            byte <= data;
+            if which = '1' then 
+              byte <= feat ;
+            else
+              byte <= speed;
+            end if;
             -- when the byte is sent, send a 0
             if end_b = '1' then
               start_b <= '0';
@@ -217,7 +233,11 @@ begin
           when 6 => 
             -- send controle (data xor addr)
             start_b <= '1';
-            byte <= data xor addr;
+            if which = '1' then
+              byte <= feat xor addr ;
+            else
+              byte <= speed xor addr;
+            end if;
             -- when the byte is sent, send a 0
             if end_b = '1' then
               start_b <= '0';
@@ -230,15 +250,17 @@ begin
             -- go to the next step
             if end_1 = '1' then
               start_1 <= '0';
-              step := 0;
+              step := 8;
             end if;
 
+           when 8 => 
+            done <= '1';  
+            step := 8;
+        
         end case;
         
       else
 --        step := 0;
-      --end go
-      end if;      
       
     -- end rising_edge
     end if;
