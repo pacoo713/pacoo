@@ -1,8 +1,8 @@
 .. footer:: page ###Page###
 
-============================
-Rapport de Projet TRAIN FPGA
-============================
+================================
+Rapport de Projet **Train** FPGA
+================================
 
 -----------------------------
 FPGA 1 Systèmes programmables
@@ -28,24 +28,44 @@ Introduction
 
 
 |
-| Ce document présente le rapport du projet train de la matière FPGA.
-Ce projet a pour but de réaliser le circuit electrique d'une centrale DCC et de la tester
-sur une vraie maquette.Programmer la vitesse du train, utiliser les différentes fonctions disponibles(klaxonne,phare...)
-| Lors de ce Projet nous avons utilisé le logiciel **Vivado** ainsi que la carte
-|  **FPGA** ``Nexys 4DDR``.
-ET nous avons devouvert le protocole DCC.
+| Ce document présente le rapport du projet train de l'UE *FPGA1*.
+| Le projet a pour but de réaliser le circuit electrique d'une *centrale DCC* et de la 
+| tester sur une vraie maquette. 
+| Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le developpement de la
+| centrale ainsi que la carte **FPGA** ``Nexys 4DDR``.
+| Lors de ce projet nous avons aussi decouvert le protocole DCC, que nous avons immplémenté.
+|
 
-2 centrales :
- - vhdl only
- - vhdl & C 
+Ce projet ce decoupe en 2 étapes qui correspondent à 2 types de centrales2 :
+ - une uniquement en ***vhdl***.
+ - l'autre en ***vhdl*** ainsi qu'en ***C*** en utilisant le microblaze de la carte. 
 
 bla bla...
 
-tout à été devellopé sous git :
+Ce projet à été devellopé sous git :
  https://github.com/maximouth/Projet_FPGA
 
+
+--------------------------------------------
+
+
+
 I) Protocole DCC
-&&&&&&&&&&&&&&&&
+================
+
+
+|
+| Le protocole DCC est un protocole standardisé qui permet de communiquer
+| entre la carte **FPGA** et les différents trains et
+| équipements de voies.
+| Il utilise une suite de commandes envoyées sur les rails
+| jusqu'aux différents trains et composants qui agissent en fonction de
+| la commande qu'ils reçoivent.
+| La locomotive peut recevoir énormément de commandes différentes,
+| klaxon, annonces d'entrée de gare, phares...(voir datasheet
+| locomotive). Elles ne seront pas toutes implementées ici, mais
+| pourront être rajoutées ultérieurement. 
+
 
 .. image:: trame.png
    :scale: 75 %
@@ -53,20 +73,20 @@ I) Protocole DCC
    :align: center
 
 
-Le protocole est un protocole standardis\'e qui permet de communiquer
-entre la carte~\emph{FPGA} et les diff\'erents trains et
-équipements de voies.
-Il utilise une suite de commandes envoy\'ees sur les rails
-jusqu'aux diff\'erents trains et composants qui agissent en fonction de
-la commande qu'ils reçoivent.
-La locomotive peut recevoir \'enormément de commandes différentes,
-klaxon, annonces d'entr\'ee de gare, phares...(voir datasheet
-locomotive). Elles ne seront pas toutes implement\'ees ici, mais
-pourront \^etre rajout\'ees ult\'erieurement. 
+Cette image represente une trame DCC et son contenu.
+Chaque trame est composée de cette façon :
+ - 14 *bit* à '1' *(preamble)*
+ - 1 *octet* **d'adresse** 
+ - 1 *octet* de **data**
+ - 1 *octet de **CRC** (*Xor* entre *adresse* et *data*) *((epilogue))*
 
+Chaque partie est séparée par un *bit* à '0'.
+
+|
+|
 
 II) Architecture
-&&&&&&&&&&&&&&&&
+================
 
 1) VHDL
 #######
@@ -74,15 +94,17 @@ II) Architecture
 *schema architecture*
 
 explication
+Nous avons commencé par créer une centrale DCC uniquement en version matérielle avec uniquement du VHDL
+L'architecture réalisée est plutot simple et est composée de différents éléments que nous allons vous detailler plus loin.
 
 2) VHDL & C
-############
+###########
 
 *schema architecture*
 explication
 
 III) Fonctions
-&&&&&&&&&&&&&&
+==============
 
 se que ca fait + chronogramme
 
@@ -106,7 +128,7 @@ se que ca fait + chronogramme
 ################
 
 IV) IHM
-&&&&&&&
+=======
 
 tuto explication
 
@@ -115,7 +137,7 @@ photo de l'interface
 explicaton code ?
 
 V) Implementation sur la maquette
-&&&&&&&
+=================================
 
 explication comment interfacer interface et la centrale.
 image oscilloscope
@@ -124,9 +146,9 @@ image maquette
 
 
 VI) Microblaze
-&&&&&&&&&&&&&&
+==============
 
 
 
 VII) Conclusion
-&&&&&&&&&&&&&&&
+===============
