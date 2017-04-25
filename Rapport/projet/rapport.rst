@@ -127,9 +127,12 @@ La trame est constistué aussi d'une suite de bits à 1 (14 bits). Nous allons d
 5) Send_byte
 ################
 Cette fonction permet de gérer les differents octet (adresse, donnée, contrôle) donc de choisir le train, sa vitesse et la fonction utiliser.
+
 6) Sequencer
 ################
-Cette fonction est décrit sous forme de machine à états, qui va gérer l'envoie des 4 trames
+Cette fonction est décrit sous forme de machine à états, qui va gérer l'envoie des 4 trames (Idle, vitesse, fonction).
+
+
 IV) IHM
 =======
 
