@@ -32,24 +32,17 @@ Introduction
 |
 
 |
-<<<<<<< HEAD
+
 | Ce document prÈsente le rapport du projet train de l'UE *FPGA1*.
 | Le projet a pour but de rÈaliser le circuit electrique d'une *centrale DCC* et de la 
 | tester sur une vraie maquette. 
 | Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le developpement de la
 | centrale ainsi que la carte **FPGA** ``Nexys 4DDR``.
 | Lors de ce projet nous avons aussi decouvert le protocole DCC, que nous avons immplÈmentÈ.
-=======
-| Ce document pr√©sente le rapport du projet train de l'UE *FPGA1*.
-| Le projet a pour but de r√©aliser le circuit √©l√®ctrique d'une *centrale DCC* et de la 
-| tester sur une vraie maquette. Programmer avec diff√©rentes vitesses du train et d'utiliser les diff√©rents fonctions du train (klaxon,phares...). 
-| Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le developpement de la
-| centrale ainsi que la carte **FPGA** ``Nexys 4DDR``.
-| Lors de ce projet nous avons aussi decouvert le protocole DCC, que nous avons impl√©ment√©.
->>>>>>> 006cd5cabf8203734394acbd2173cb797e6982c3
+|
 |
 
-Ce projet ce decoupe en 2 Ètapes qui correspondent ‡ 2 types de centrales2 :
+Ce projet ce decoupe en 2 Ètapes qui correspondent ‡ 2 types de centrales :
  - une uniquement en ***vhdl***.
  - l'autre en ***vhdl*** ainsi qu'en ***C*** en utilisant le microblaze de la carte. 
 
@@ -78,7 +71,6 @@ I) Protocole DCC
 
 
 |
-<<<<<<< HEAD
 | Le protocole DCC est un protocole standardisÈ qui permet de communiquer entre la carte 
 | **FPGA** et les diffÈrents trains et Èquipements de voies.
 | Il utilise une suite de commandes envoyÈes sur les rails jusqu'aux diffÈrents trains et 
@@ -90,19 +82,6 @@ I) Protocole DCC
 |
 
 
-=======
-| Le protocole DCC est un protocole standardis√© qui permet de communiquer
-| entre la carte **FPGA** et les diff√©rents trains et
-| √©quipements de voies.
-| Il utilise une suite de commandes envoy√©es des trames (4 trames) sur les rails 
-| jusqu'aux diff√©rents trains.
-| La locomotive peut recevoir √©norm√©ment de commandes diff√©rentes,
-| klaxon, annonces d'entr√©e de gare, phares...(voir datasheet
-| locomotive). Elles ne seront pas toutes implement√©es ici, mais
-| pourront √™tre rajout√©es ult√©rieurement. 
->>>>>>> 006cd5cabf8203734394acbd2173cb797e6982c3
-
-
 .. image:: trame.png
    :scale: 250 %
    :alt: trame protocale DCC
@@ -112,7 +91,8 @@ I) Protocole DCC
 
 
 Cette image represente une trame DCC et son contenu.
-Chaque trame est composÈe de cette fa√ßon :
+Chaque trame est composÈe de cette faÁon :
+
  - 14 *bit* ‡ '1' *(preamble)*
  - 1 *octet* **d'adresse** 
  - 1 *octet* de **data**
@@ -184,7 +164,7 @@ II) Architecture
 |
 |
 
-| Nous avons modifiÈ la premiËre centrale matÈrielle pour utiliser le microblaze de la carte.
+| Nous avons ensuite modifiÈ la premiËre centrale matÈrielle pour utiliser le microblaze de la carte.
 | Le microblaze sert ‡ gerer les diffÈrents appuis sur les boutons de l'IHM.
 
 |
@@ -200,7 +180,7 @@ III) Fonctions
 
 1) Clock Divider
 ################
-<<<<<<< HEAD
+
 
 |
 
@@ -229,14 +209,11 @@ III) Fonctions
 | sortie qui doivent Ítre en us.
 | Pour simplifier le gestion du temps nous avons creer un diviseur d'horloge. Qui diminue
 | la vitesse de 100 MHz ‡ 1 MHz.
-=======
-Cette fonction permet de diviser le signal de la clock original de 100 Mhz et obtenir une fr√©quence 1 Mhz
-en sortie. Ce qui facilite l'utilisation du protocole DCC.
->>>>>>> 006cd5cabf8203734394acbd2173cb797e6982c3
+| Ce qui facilite l'utilisation du protocole DCC.
+
 
 2) Send_One
 ################
-Cette fonction permet de cr√©e le signal correspondant √† un bit √† 1 qui constituer la trame √† envoyer. Le signal doit respecter les indications du protocole DCC (Implusion √† 0 de 58 us puis impulsion √† 1 de 58 us).
 
 |
 
@@ -267,7 +244,6 @@ Cette fonction permet de cr√©e le signal correspondant √† un bit √† 1 qui consti
 
 3) Send_Zero
 ################
-Cette fonction permet de cr√©e le signal correspondant √† un bit √† 0 qui constituer √©galement trame √† envoyer. Le signal doit respecter les indications du protocole DCC (Implusion √† 0 de 100 us puis impulsion √† 1 de 100us).
 
 |
 
@@ -297,7 +273,7 @@ Cette fonction permet de cr√©e le signal correspondant √† un bit √† 0 qui consti
 
 4) Send_preamble
 ################
-La trame est constistu√© aussi d'une suite de bits √† 1 (14 bits). Nous allons donc r√©utiliser le code du Send_One afin de produire cette suite de bits √† 1.
+
 
 |
 
@@ -331,7 +307,6 @@ La trame est constistu√© aussi d'une suite de bits √† 1 (14 bits). Nous allons d
 
 5) Send_byte
 ################
-Cette fonction permet de g√©rer les differents octet (adresse, donn√©e, contr√¥le) donc de choisir le train, sa vitesse et la fonction utiliser.
 
 |
 
@@ -368,7 +343,7 @@ Cette fonction permet de g√©rer les differents octet (adresse, donn√©e, contr√¥l
 
 6) Sequencer
 ################
-Cette fonction est d√©crit sous forme de machine √† √©tats, qui va g√©rer l'envoie des 4 trames (Idle, vitesse, fonction).
+
 
 
 |
@@ -398,8 +373,14 @@ Cette fonction est d√©crit sous forme de machine √† √©tats, qui va g√©rer l'envo
    :alt: trame protocale DCC
    :align: center
 
+
+| Ce module est implementÈ gr‚ce ‡ une machine √† Ètats, qui va gÈrer l'envoie des 4 trames
+| *(Idle, Vitesse, Fonction, Idle)*.
+
+
 |
 |
+
 
 IV) IHM
 =======
@@ -410,7 +391,7 @@ photo de l'interface
 
 explicaton code ?
 
-V) Impl√©mentation sur la maquette
+V) ImplÈmentation sur la maquette
 =================================
 
 explication comment interfacer interface et la centrale.
