@@ -135,8 +135,8 @@ II) Architecture
 
 |
 
-.. image:: archi_vhdl.png
-   :scale: 250 %
+.. image:: schema_vhdl.png
+   :scale: 50 %
    :alt: trame protocale DCC
    :align: center
 
@@ -156,8 +156,8 @@ II) Architecture
 
 |
 
-.. image:: archi_mixe.png
-   :scale: 250 %
+.. image:: schema_vhdl_c.png
+   :scale: 50 %
    :alt: trame protocale DCC
    :align: center
 
@@ -167,6 +167,10 @@ II) Architecture
 | Nous avons ensuite modifié la première centrale matérielle pour utiliser le microblaze de la carte.
 | Le microblaze sert à gerer les différents appuis sur les boutons de l'IHM.
 
+|
+|
+|
+|
 |
 |
 
@@ -196,21 +200,24 @@ III) Fonctions
 	  
 	  
 
-.. image:: clock.png
+| La carte nexys 4 DDR tourne à 100Mhz ce qui n'est pas pratique pour gerer des signaux en
+| sortie qui doivent être en us.
+| Pour simplifier le gestion du temps nous avons creer un diviseur d'horloge. Qui diminue
+| la vitesse de 100 MHz à 1 MHz.
+| Ce qui facilite l'utilisation du protocole DCC.
+|
+
+.. image:: trame/div_clock.png
    :scale: 250 %
    :alt: trame protocale DCC
    :align: center
 
 |
 |
-
-
-| La carte nexys 4 DDR tourne à 100Mhz ce qui n'est pas pratique pour gerer des signaux en
-| sortie qui doivent être en us.
-| Pour simplifier le gestion du temps nous avons creer un diviseur d'horloge. Qui diminue
-| la vitesse de 100 MHz à 1 MHz.
-| Ce qui facilite l'utilisation du protocole DCC.
-
+| On voit que sur la simulation, la periode de la sortie du module est 100x plus petite que
+| celle de l'entrée.
+| On divise bien l'horloge par 100, pour passer de 100 MHz à 1 MHz.
+|
 
 2) Send_One
 ################
@@ -229,18 +236,23 @@ III) Fonctions
  end send_one;
 
 
-.. image:: send_one.png
+
+
+| Ce petit module sert à envoyer un *'1'* en suivant le protocole **DCC**, c'est à dire envoyer un *'0'* 
+| logique pendant **58** clock cycles suivit d'un *'1'* logique pendant **58** clock cycles.
+| Il tourne à *1 Mhz* grâce au module ``clock_divider``.
+|
+
+.. image:: trame/send_one.png
    :scale: 250 %
    :alt: trame protocale DCC
    :align: center
 
 |
 |
-
-
-| Ce petit module sert à envoyer un *'1'* en suivant le protocole **DCC**, c'est à dire envoyer un *'1'* 
-| logique pendant **58** clock cycles suivit d'un *'0'* logique pendant **58** clock cycles.
-| Il tourne à *1 Mhz* grâce au module ``clock_divider``.
+| On observe sur la simulation que à partir du moment ou le signal ``start_1`` passe à *'1'* le signal de 
+| sortie envoie un *'0'* pendant **58**  cycles suivit d'un *'1'* pendant **58** cycles et signal que l'envoie est
+| terminé par le signal ``end_1`` à  *'1'* pendant **1** cycle.
 
 3) Send_Zero
 ################
@@ -258,18 +270,23 @@ III) Fonctions
     );      
  end send_zero;
 	  
-.. image:: send_zero.png
+
+| Ce petit module sert à envoyer un *'0'* en suivant le protocole **DCC**, c'est à dire envoyer un *'0'* 
+| logique pendant **100** clock cycles suivit d'un *'1'* logique pendant **100** clock cycles.
+| Il tourne à *1 Mhz* grâce au module ``clock_divider``.
+|
+
+.. image:: trame/send_zero.png
    :scale: 250 %
    :alt: trame protocale DCC
    :align: center
 
 |
 |
-
-| Ce petit module sert à envoyer un *'0'* en suivant le protocole **DCC**, c'est à dire envoyer un *'1'* 
-| logique pendant **100** clock cycles suivit d'un *'0'* logique pendant **100** clock cycles.
-| Il tourne à *1 Mhz* grâce au module ``clock_divider``.
-
+| On observe sur la simulation que à partir du moment ou le signal ``start_0`` passe à *'1'* le signal de 
+| sortie envoie un *'0'* pendant **100**  cycles suivit d'un *'1'* pendant **100** cycles et signal que l'envoie est
+| terminé par le signal ``end_0`` à  *'1'* pendant **1** cycle.
+|
 
 4) Send_preamble
 ################
@@ -289,13 +306,6 @@ III) Fonctions
  end send_preamble;
 	  
 	  
-.. image:: send_preamble.png
-   :scale: 250 %
-   :alt: trame protocale DCC
-   :align: center
-
-|
-|
 
 | Ce module sert à envoyer un preambule en suivant le protocole **DCC**, c'est à dire envoyer 
 | une suite de 14 *'1'*. Ce module se sert du petit module ``send_one``.
@@ -304,6 +314,20 @@ III) Fonctions
 | Il envoie  un **start_1** au module ``send_one`` et  attend de recevoir le signal  **end_1**
 | pour incrementer le compteur.
 | Une fois le preambule envoyé il renvoie le signal **end_p** qui signifie qu'il a fini.
+|
+
+.. image:: trame/send_preamble.png
+   :scale: 250 %
+   :alt: trame protocale DCC
+   :align: center
+
+|
+|
+| On observe sur la simulation qu'une fois le signal ``start_p`` passe à *'1'* le signal de sortie 
+| envoie **14** *'1'* suivant le protocole DCC.
+| Une fois les  **14** *'1'* envoyé, il signale qu'il a fini avec le signal ``end_p`` à *'1'* pendant **1** cycle.
+|
+|
 
 5) Send_byte
 ################
@@ -323,14 +347,8 @@ III) Fonctions
  end send_byte;
 
 	  
-.. image:: send_byte.png
-   :scale: 250 %
-   :alt: trame protocale DCC
-   :align: center
-
 |
 |
-
 | Ce module sert à envoyer un octet en suivant le protocole **DCC**, c'est à dire envoyer 
 | une suite de 8 *'1'* ou *'0'* selon la valeur de l'octet en entrée. Ce module se sert des
 | petits modules ``send_one``, et ``send_zero``.
@@ -339,6 +357,15 @@ III) Fonctions
 | Il envoie  un **start_0/1** à l'un des deux sous module et  attend de recevoir le signal
 | **end_0/1** avant d'envoyer le bit suivant et incrementer le compteur.
 | Une fois l'octet envoyé il renvoie le signal **end_b** qui signifie qu'il a fini.
+|
+
+.. image:: trame/send_byte.png
+   :scale: 250 %
+   :alt: trame protocale DCC
+   :align: center
+
+|
+|
 
 
 6) Sequencer
@@ -366,13 +393,6 @@ III) Fonctions
     pulse     : out STD_LOGIC := '0'
     );      
  end sequencer;
-   
-	  
-.. image:: sequencer.png
-   :scale: 250 %
-   :alt: trame protocale DCC
-   :align: center
-
 
 | Ce module est implementé grâce à une machine Ã  états, qui va gérer l'envoie des 4 trames
 | *(Idle, Vitesse, Fonction, Idle)*.

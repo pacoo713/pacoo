@@ -19,6 +19,15 @@ begin
   LO : entity work.div_clock
     port map (input, output);
 
-  input <= not input after 1 ns;
+  process
+  begin
+    
+    for i in 0 to 250 loop
+      input <= not input;  
+      wait for 1 us;      
+    end loop;
 
+
+    wait;
+  end process;
 end simu;
