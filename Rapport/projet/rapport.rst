@@ -366,6 +366,13 @@ III) Fonctions
 
 |
 |
+| Lors de cette simulation nous cherchons à envoyer l'octet suivant *"10101010"*, c'est ce que nous
+| avons mit dans le signal ``byte``.
+| On observe sur la simulation qu'une fois le signal ``start_b`` passe à *'1'* le signal de sortie 
+| envoie les différentes valeurs contenue dans le signal ``byte`` c'est à dire une alternance de *'1'* et de *'0'*.
+| Une fois les différents bits de l'octet envoyé, il signale qu'il a fini avec le signal ``end_b`` à *'1'* pendant **1** cycle.
+|
+|
 
 
 6) Sequencer
@@ -400,24 +407,180 @@ III) Fonctions
 
 |
 |
+|
+|
+|
+|
+|
+|
+|
 
+--------------------------------------------------
+
+|
+|
 
 IV) IHM
 =======
 
-tuto explication
+|
+|
 
-photo de l'interface
 
-explicaton code ?
+.. image:: exe_add.jpg
+   :scale: 150 %
+   :alt: photo de l'interface
+   :align: center
+
+
+|
+|                                      *Photo de l'interface*
+|
+|
+| Voici une photo de l'*IHM* de notre projet.
+
+Les *afficheurs 7 segments* sont decoupés en 2 :
+
+ - Les 4 de **gauches** servent à afficher le nom de la commande. 
+ - Les 4 de **droites** servent à afficher la valeur de la commande. 
+
+|
+
+On utilise **3** *boutons* sur les 5 :
+
+ - Le bouton de **gauche** pour changer la commande.
+ - Le bouton de **droite** pour incrementer la valeur de la commande
+   affichée.
+ - Le bouton du **milieu** pour envoyer les nouvelles valeurs entrées vers
+   le module ``Master``
+
+|
+
+Le switch de droite sert de reset, c'est un reset actif haut.   
+
+
+|
+|
+|
+
+
+.. code:: VHDL
+
+ entity control_seg is
+  Port ( CLK    : in STD_LOGIC;
+         reset  : in STD_LOGIC;
+         CA     : out STD_LOGIC;
+         CB     : out STD_LOGIC;
+         CC     : out STD_LOGIC;
+         CD     : out STD_LOGIC;
+         CE     : out STD_LOGIC;
+         CF     : out STD_LOGIC;
+         CG     : out STD_LOGIC;
+         DP     : out STD_LOGIC;
+         AN     : out STD_LOGIC_VECTOR (7 downto 0);
+         ADD    : out STD_LOGIC_VECTOR (7 downto 0);
+         SPD    : out STD_LOGIC_VECTOR (7 downto 0);
+         FEAT   : out STD_LOGIC_VECTOR (7 downto 0);
+         -- chose setting
+         BTNL   : in STD_LOGIC;
+         -- increment setting value
+         BTNR   : in STD_LOGIC
+         );
+ end control_seg;
+
+|
+|
+| Voici l'interface de notre IHM.
+| Elle reçoit en entrée la clock et le reset, ainsi que la valeur des différents boutons.
+| Et en sortie les différents fils servant à contrôler les afficheurs *CA*->*CG* *DP* *AN* ainsi que
+| les valeurs courantes des octets d'adresse, de vitesse et de la commande.
+|
+|
+
+-------------------------------
+
+|
+|
 
 V) Implémentation sur la maquette
 =================================
 
 explication comment interfacer interface et la centrale.
+(schema, et explication?
+
+.. code:: VHDL
+
+ entity Master is
+  Port ( CLK   : in STD_LOGIC;
+         BTNC  : in STD_LOGIC;
+         BTNL  : in STD_LOGIC;
+         BTNR  : in STD_LOGIC;
+         reset : in STD_LOGIC;
+         LED   : out STD_LOGIC;
+         CA    : out STD_LOGIC;
+         CB    : out STD_LOGIC;
+         CC    : out STD_LOGIC;
+         CD    : out STD_LOGIC;
+         CE    : out STD_LOGIC;
+         CF    : out STD_LOGIC;
+         CG    : out STD_LOGIC;
+         DP    : out STD_LOGIC;
+         AN    : out Std_Logic_Vector (7 downto 0);
+         PULSE : out STD_LOGIC);
+
+ end Master;
+
+	  
+
+| 
+| Le module ``interface`` envoie en permanence vers le module ``Master`` la valeur que lui a des différentes commandes.
+| Le module ``Master`` ne mets à jour les valeurs à envoyer vers le train que lorsqu'il detecte un appuit
+| sur le bouton central. Il met à jour la valeur locale des commandes.
+|
+Il envoit par contre en continue un groupe de 4 trames vers le(s)
+train(s) :
+
+ - IDLE  : Ne fait rien
+ - SPEED : Envois la valeur de la vitesse au train choisit
+ - FEAT  : Envois la commande au train choisit
+ - IDLE  : Ne fait rien
+
+|
+| Ce module sert en fait à disperser les differents fils en entrée ou sortie vers les differents composants.
+|
+|
+
 image oscilloscope
-fonctionalitée implémenté
+
+.. image:: envois_feat.png
+   :scale: 100 %
+   :alt: envoie vitesse
+   :align: center
+
+|
+| envois trame adresse 0 et vitesse
+|
+	   
+.. image:: envois_idle.png
+   :scale: 100 %
+   :alt: envoit data
+   :align: center
+
+|
+| envois trame idle
+|
+
+      
+fonctionalitées implémentées (type de vitesse, phares, klakons)
+tableau
+
+
 image maquette
+
+.. image:: maquette.png
+   :scale: 100 %
+   :alt: photo maquette
+   :align: center
 
 
 VI) Microblaze
