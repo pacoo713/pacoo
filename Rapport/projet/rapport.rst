@@ -5,7 +5,7 @@ Rapport de Projet **Train** FPGA
 ================================
 
 -----------------------------
-FPGA 1 SystËmes programmables
+FPGA 1 Syst√®mes programmables
 -----------------------------
 
 |
@@ -33,22 +33,22 @@ Introduction
 
 |
 
-| Ce document prÈsente le rapport du projet train de l'UE *FPGA1*.
-| Le projet a pour but de rÈaliser le circuit electrique d'une *centrale DCC* et de la 
+| Ce document pr√©sente le rapport du projet train de l'UE *FPGA1*.
+| Le projet a pour but de r√©aliser le circuit electrique d'une *centrale DCC* et de la 
 | tester sur une vraie maquette. 
-| Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le developpement de la
-| centrale ainsi que la carte **FPGA** ``Nexys 4DDR``.
-| Lors de ce projet nous avons aussi decouvert le protocole DCC, que nous avons immplÈmentÈ.
+| Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le d√©veloppement de la
+| centrale ainsi que de la carte **FPGA** ``Nexys 4DDR``.
+| Nous avons d√©couvert le protocole DCC, que nous avons impl√©ment√©.
 |
 |
 
-Ce projet ce decoupe en 2 Ètapes qui correspondent ‡ 2 types de centrales :
+Ce projet se d√©compose en 2 √©tapes qui correspondent √† 2 types de centrales :
  - une uniquement en ***vhdl***.
- - l'autre en ***vhdl*** ainsi qu'en ***C*** en utilisant le microblaze de la carte. 
+ - l'autre en ***vhdl*** et en ***C*** en utilisant le microblaze de la carte. 
 
-bla bla...
+|
 
-Ce projet ‡ ÈtÈ devellopÈ sous git :
+Ce projet a √©t√© developp√© sous git :
  https://github.com/maximouth/Projet_FPGA
 
 |
@@ -71,13 +71,13 @@ I) Protocole DCC
 
 
 |
-| Le protocole DCC est un protocole standardisÈ qui permet de communiquer entre la carte 
-| **FPGA** et les diffÈrents trains et Èquipements de voies.
-| Il utilise une suite de commandes envoyÈes sur les rails jusqu'aux diffÈrents trains et 
+| Le protocole DCC est un protocole standardis√© qui permet de communiquer entre la carte 
+| **FPGA** et les diff√©rents trains et √©quipements de voies.
+| Il utilise une suite de commandes envoy√©es sur les rails jusqu'aux diff√©rents trains et 
 | composants qui agissent en fonction de la commande qu'ils re√ßoivent. La locomotive peut 
-| recevoir ÈnormÈment de commandes diffÈrentes, klaxon, annonces d'entrÈe de gare, phares... 
-| (voir datasheet locomotive). Elles ne seront pas toutes implementÈes ici, mais pourront √™tre
-| rajoutÈes ultÈrieurement. 
+| recevoir √©norm√©ment de commandes diff√©rentes, klaxon, annonces d'entr√©e de gare, phares... 
+| (voir datasheet locomotive). Elles ne seront pas toutes impl√©ment√©es ici, mais pourront √™tre
+| rajout√©es ult√©rieurement. 
 |
 |
 
@@ -90,15 +90,15 @@ I) Protocole DCC
 |
 
 
-Cette image represente une trame DCC et son contenu.
-Chaque trame est composÈe de cette faÁon :
+Cette image repr√©sente une trame DCC et son contenu.
+Chaque trame est compos√©e de cette fa√ßon :
 
- - 14 *bit* ‡ '1' *(preamble)*
+ - 14 *bit* √† '1' *(pr√©ambule)*
  - 1 *octet* **d'adresse** 
  - 1 *octet* de **data**
  - 1 *octet de **CRC** *Xor* entre *adresse* et *data* *((epilogue))*
 
-Chaque partie est sÈparÈe par un *bit* ‡ '0'.
+Chaque partie est s√©par√©e par un *bit* √† '0'.
 
 |
 |
@@ -143,9 +143,9 @@ II) Architecture
 |
 |
 
-| Nous avons commencÈ par crÈer une centrale DCC uniquement en version matÈrielle avec
-| uniquement du VHDL. L'architecture rÈalisÈe est plutot simple et est composÈe de diffÈrents
-| ÈlÈments que nous allons vous detailler plus loin.
+| Nous avons commenc√© par cr√©er une centrale DCC uniquement en version mat√©rielle 
+| uniquement en VHDL. L'architecture r√©alis√©e est plut√¥t simple et est compos√©e de diff√©rents
+| √©l√©ments que nous allons d√©tailler plus loin.
 
 
 |
@@ -164,8 +164,8 @@ II) Architecture
 |
 |
 
-| Nous avons ensuite modifiÈ la premiËre centrale matÈrielle pour utiliser le microblaze de la carte.
-| Le microblaze sert ‡ gerer les diffÈrents appuis sur les boutons de l'IHM.
+| Nous avons ensuite modifi√© la premi√®re centrale mat√©rielle pour utiliser le microblaze de la carte.
+| Le microblaze sert √† g√©rer les diff√©rents appuis sur les boutons de l'IHM.
 
 |
 |
@@ -200,10 +200,10 @@ III) Fonctions
 	  
 	  
 
-| La carte nexys 4 DDR tourne ‡ 100Mhz ce qui n'est pas pratique pour gerer des signaux en
-| sortie qui doivent Ítre en us.
-| Pour simplifier le gestion du temps nous avons creer un diviseur d'horloge. Qui diminue
-| la vitesse de 100 MHz ‡ 1 MHz.
+| La carte nexys 4 DDR tourne √† 100Mhz ce qui n'est pas pratique pour g√©rer des signaux en
+| sortie qui doivent √™tre en ns.
+| Pour simplifier le gestion du temps nous avons cr√©er un diviseur d'horloge, qui diminue
+| la vitesse de 100 MHz √† 1 MHz.
 | Ce qui facilite l'utilisation du protocole DCC.
 |
 
@@ -214,9 +214,9 @@ III) Fonctions
 
 |
 |
-| On voit que sur la simulation, la periode de la sortie du module est 100x plus petite que
-| celle de l'entrÈe.
-| On divise bien l'horloge par 100, pour passer de 100 MHz ‡ 1 MHz.
+| On voit que sur la simulation, la p√©riode de la sortie du module est 100x plus petite que
+| celle de l'entr√©e.
+| On divise bien l'horloge par 100, pour passer de 100 MHz √† 1 MHz.
 |
 
 2) Send_One
@@ -238,9 +238,9 @@ III) Fonctions
 
 
 
-| Ce petit module sert ‡ envoyer un *'1'* en suivant le protocole **DCC**, c'est ‡ dire envoyer un *'0'* 
-| logique pendant **58** clock cycles suivit d'un *'1'* logique pendant **58** clock cycles.
-| Il tourne ‡ *1 Mhz* gr‚ce au module ``clock_divider``.
+| Ce petit module sert √† envoyer un *'1'* en suivant le protocole **DCC**, c'est √† dire envoyer un *'0'* 
+| logique pendant **58** clock cycles suivi d'un *'1'* logique pendant **58** clock cycles.
+| Il tourne √† *1 Mhz* gr√¢ce au module ``clock_divider``.
 |
 
 .. image:: trame/send_one.png
@@ -250,9 +250,9 @@ III) Fonctions
 
 |
 |
-| On observe sur la simulation que ‡ partir du moment ou le signal ``start_1`` passe ‡ *'1'* le signal de 
-| sortie envoie un *'0'* pendant **58**  cycles suivit d'un *'1'* pendant **58** cycles et signal que l'envoie est
-| terminÈ par le signal ``end_1`` ‡  *'1'* pendant **1** cycle.
+| On observe sur la simulation qu'√† partir du moment o√π le signal ``start_1`` passe √† *'1'* le signal de 
+| sortie envoie un *'0'* pendant **58**  cycles suivi d'un *'1'* pendant **58** cycles et signale que l'envoi est
+| termin√© par le signal ``end_1`` √†  *'1'* pendant **1** cycle.
 
 3) Send_Zero
 ################
@@ -271,9 +271,9 @@ III) Fonctions
  end send_zero;
 	  
 
-| Ce petit module sert ‡ envoyer un *'0'* en suivant le protocole **DCC**, c'est ‡ dire envoyer un *'0'* 
-| logique pendant **100** clock cycles suivit d'un *'1'* logique pendant **100** clock cycles.
-| Il tourne ‡ *1 Mhz* gr‚ce au module ``clock_divider``.
+| Ce petit module sert √† envoyer un *'0'* en suivant le protocole **DCC**, c'est √† dire envoyer un *'0'* 
+| logique pendant **100** clock cycles suivi d'un *'1'* logique pendant **100** clock cycles.
+| Il tourne √† *1 Mhz* gr√¢ce au module ``clock_divider``.
 |
 
 .. image:: trame/send_zero.png
@@ -283,9 +283,9 @@ III) Fonctions
 
 |
 |
-| On observe sur la simulation que ‡ partir du moment ou le signal ``start_0`` passe ‡ *'1'* le signal de 
-| sortie envoie un *'0'* pendant **100**  cycles suivit d'un *'1'* pendant **100** cycles et signal que l'envoie est
-| terminÈ par le signal ``end_0`` ‡  *'1'* pendant **1** cycle.
+| On observe sur la simulation qu'√† partir du moment o√π le signal ``start_0`` passe √† *'1'* le signal de 
+| sortie envoie un *'0'* pendant **100**  cycles suivi d'un *'1'* pendant **100** cycles et signale que l'envoi est
+| termin√© par le signal ``end_0`` √†  *'1'* pendant **1** cycle.
 |
 
 4) Send_preamble
@@ -307,13 +307,13 @@ III) Fonctions
 	  
 	  
 
-| Ce module sert ‡ envoyer un preambule en suivant le protocole **DCC**, c'est ‡ dire envoyer 
+| Ce module sert √† envoyer un pr√©ambule en suivant le protocole **DCC**, c'est √† dire √† envoyer 
 | une suite de 14 *'1'*. Ce module se sert du petit module ``send_one``.
-| Ce module attend de recevoir un signal **start_p** qui lui signal qu'il doit envoyer un preambule. 
-| Il se sert d'un compteur initialisÈ ‡ ``0`` qui sert ‡ connaitre le nombre de *'1'* envoyÈ. 
+| Ce module attend de recevoir un signale **start_p** qui lui signale qu'il doit envoyer un preambule. 
+| Il se sert d'un compteur initialis√© √† ``0`` *(signal interne)* qui sert √† connaitre le nombre de *'1'* envoy√©. 
 | Il envoie  un **start_1** au module ``send_one`` et  attend de recevoir le signal  **end_1**
 | pour incrementer le compteur.
-| Une fois le preambule envoyÈ il renvoie le signal **end_p** qui signifie qu'il a fini.
+| Une fois le preambule envoy√© il renvoie le signal **end_p** qui signifie qu'il a fini.
 |
 
 .. image:: trame/send_preamble.png
@@ -323,9 +323,9 @@ III) Fonctions
 
 |
 |
-| On observe sur la simulation qu'une fois le signal ``start_p`` passe ‡ *'1'* le signal de sortie 
+| On observe sur la simulation que quand le signal ``start_p`` passe √† *'1'* le signal de sortie 
 | envoie **14** *'1'* suivant le protocole DCC.
-| Une fois les  **14** *'1'* envoyÈ, il signale qu'il a fini avec le signal ``end_p`` ‡ *'1'* pendant **1** cycle.
+| Une fois les  **14** *'1'* envoy√©s, il signale qu'il a fini avec le signal ``end_p`` √† *'1'* pendant **1** cycle.
 |
 |
 
@@ -349,14 +349,14 @@ III) Fonctions
 	  
 |
 |
-| Ce module sert ‡ envoyer un octet en suivant le protocole **DCC**, c'est ‡ dire envoyer 
-| une suite de 8 *'1'* ou *'0'* selon la valeur de l'octet en entrÈe. Ce module se sert des
+| Ce module sert √† envoyer un octet en suivant le protocole **DCC**, c'est √† dire envoyer 
+| une suite de 8 *'1'* ou *'0'* selon la valeur de l'octet en entr√©e. Ce module se sert des
 | petits modules ``send_one``, et ``send_zero``.
 | Ce module attend de recevoir un signal **start_b** qui lui signal qu'il doit envoyer un octet. 
-| Il se sert d'un compteur initialisÈ ‡ ``0`` qui sert ‡ connaitre le nombre de *bit(s)* envoyÈs. 
-| Il envoie  un **start_0/1** ‡ l'un des deux sous module et  attend de recevoir le signal
-| **end_0/1** avant d'envoyer le bit suivant et incrementer le compteur.
-| Une fois l'octet envoyÈ il renvoie le signal **end_b** qui signifie qu'il a fini.
+| Il se sert d'un compteur initialis√© √† ``0`` qui sert √† connaitre le nombre de *bit(s)* envoy√©s. 
+| Il envoie  un **start_0/1** √† l'un des deux sous-modules et  attend de recevoir le signal
+| **end_0/1** avant d'envoyer le bit suivant et incr√©menter le compteur.
+| Une fois l'octet envoy√© il renvoie le signal **end_b** qui signifie qu'il a fini.
 |
 
 .. image:: trame/send_byte.png
@@ -366,11 +366,11 @@ III) Fonctions
 
 |
 |
-| Lors de cette simulation nous cherchons ‡ envoyer l'octet suivant *"10101010"*, c'est ce que nous
-| avons mit dans le signal ``byte``.
-| On observe sur la simulation qu'une fois le signal ``start_b`` passe ‡ *'1'* le signal de sortie 
-| envoie les diffÈrentes valeurs contenue dans le signal ``byte`` c'est ‡ dire une alternance de *'1'* et de *'0'*.
-| Une fois les diffÈrents bits de l'octet envoyÈ, il signale qu'il a fini avec le signal ``end_b`` ‡ *'1'* pendant **1** cycle.
+| Lors de cette simulation nous cherchons √† envoyer l'octet suivant *"10101010"*. Pour cela nous
+| l'avons mis dans le signal ``byte``.
+| On observe sur la simulation que lorsque le signal ``start_b`` passe √† *'1'* le signal de sortie 
+| envoie les diff√©rentes valeurs contenues dans le signal ``byte`` c'est √† dire une alternance de *'1'* et de *'0'*.
+| Une fois les diff√©rents bits de l'octet envoy√©s, le module signale qu'il a fini avec le signal ``end_b`` √† *'1'* pendant **1** cycle.
 |
 |
 
@@ -401,7 +401,7 @@ III) Fonctions
     );      
  end sequencer;
 
-| Ce module est implementÈ gr‚ce ‡ une machine √† Ètats, qui va gÈrer l'envoie des 4 trames
+| Ce module est impl√©ment√© gr√¢ce √† une machine √† √©tats, qui va g√©rer l'envoi des 4 trames
 | *(Idle, Vitesse, Fonction, Idle)*.
 
 
@@ -425,6 +425,9 @@ IV) IHM
 
 |
 |
+|
+|
+| Voici une photo de l'*IHM* de notre projet.
 
 
 .. image:: exe_add.jpg
@@ -437,21 +440,20 @@ IV) IHM
 |                                      *Photo de l'interface*
 |
 |
-| Voici une photo de l'*IHM* de notre projet.
 
-Les *afficheurs 7 segments* sont decoupÈs en 2 :
+Les *afficheurs 7 segments* sont d√©coup√©s en 2 :
 
- - Les 4 de **gauches** servent ‡ afficher le nom de la commande. 
- - Les 4 de **droites** servent ‡ afficher la valeur de la commande. 
+ - Les 4 de **gauches** servent √† afficher le nom de la commande. 
+ - Les 4 de **droites** servent √† afficher la valeur de la commande. 
 
 |
 
 On utilise **3** *boutons* sur les 5 :
 
  - Le bouton de **gauche** pour changer la commande.
- - Le bouton de **droite** pour incrementer la valeur de la commande
-   affichÈe.
- - Le bouton du **milieu** pour envoyer les nouvelles valeurs entrÈes vers
+ - Le bouton de **droite** pour incr√©menter la valeur de la commande
+   affich√©e.
+ - Le bouton du **milieu** pour envoyer les nouvelles valeurs entr√©es vers
    le module ``Master``
 
 |
@@ -462,6 +464,17 @@ Le switch de droite sert de reset, c'est un reset actif haut.
 |
 |
 |
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+| Voici l'interface de notre IHM
 
 
 .. code:: VHDL
@@ -491,9 +504,21 @@ Le switch de droite sert de reset, c'est un reset actif haut.
 |
 |
 | Voici l'interface de notre IHM.
-| Elle reÁoit en entrÈe la clock et le reset, ainsi que la valeur des diffÈrents boutons.
-| Et en sortie les diffÈrents fils servant ‡ contrÙler les afficheurs *CA*->*CG* *DP* *AN* ainsi que
-| les valeurs courantes des octets d'adresse, de vitesse et de la commande.
+
+Elle re√ßoit :
+
+ - En entr√©e la clock et le reset, ainsi que la valeur des diff√©rents boutons.
+ - En sortie les diff√©rents fils servant √† contr√¥ler les afficheurs
+   *CA*->*CG* *DP* *AN* ainsi que les valeurs courantes des octets
+   d'adresse, de vitesse et de la commande.
+
+|
+|
+|
+|
+|
+|
+|
 |
 |
 
@@ -501,12 +526,18 @@ Le switch de droite sert de reset, c'est un reset actif haut.
 
 |
 |
+|
+|
+|
+|
+|
+|
 
-V) ImplÈmentation sur la maquette
+V) Impl√©mentation sur la maquette
 =================================
 
-explication comment interfacer interface et la centrale.
-(schema, et explication?
+|
+|
 
 .. code:: VHDL
 
@@ -533,46 +564,75 @@ explication comment interfacer interface et la centrale.
 	  
 
 | 
-| Le module ``interface`` envoie en permanence vers le module ``Master`` la valeur que lui a des diffÈrentes commandes.
-| Le module ``Master`` ne mets ‡ jour les valeurs ‡ envoyer vers le train que lorsqu'il detecte un appuit
-| sur le bouton central. Il met ‡ jour la valeur locale des commandes.
+| Le module ``interface`` envoie en permanence vers le module ``Master`` la valeur courante des diff√©rentes commandes.
+| Le module ``Master`` ne mets √† jour les valeurs √† envoyer vers le train que lorsqu'il d√©tecte un appui
+| sur le bouton central. Dans ce cas la valeur locale des commandes est mise √† jour .
 |
 Il envoit par contre en continue un groupe de 4 trames vers le(s)
 train(s) :
 
  - IDLE  : Ne fait rien
- - SPEED : Envois la valeur de la vitesse au train choisit
- - FEAT  : Envois la commande au train choisit
+ - SPEED : Envoi la valeur de la vitesse au train choisi
+ - FEAT  : Envoi la commande au train choisi
  - IDLE  : Ne fait rien
 
 |
-| Ce module sert en fait ‡ disperser les differents fils en entrÈe ou sortie vers les differents composants.
+| Ce module sert en fait √† disperser les differents fils arrivant en entr√©e ou en sortie vers les
+| diff√©rents composants.
 |
 |
-
-image oscilloscope
+|
+|
+|
+|
+|
+|
+|
+|
 
 .. image:: envois_feat.png
-   :scale: 100 %
-   :alt: envoie vitesse
+   :scale: 150 %
+   :alt: envoi vitesse
    :align: center
 
 |
-| envois trame adresse 0 et vitesse
+| Sur cette image nous voyons une image d'oscilloscope montrant une trame de vitesse.
+On peut observer :
+
+ - les 14 bits √† *'1'* du pr√©ambule,
+ - l'octet d'adresse qui correspond √† l'adresse *0x0*
+ - l'octet de vitesse √† *0x0* (vitesse nulle)
+ - l'octet de CRC egal √† *0x0* (**xor** entre adresse et vitesse)
+
 |
-	   
+|
+
 .. image:: envois_idle.png
-   :scale: 100 %
-   :alt: envoit data
+   :scale: 150 %
+   :alt: envoi data
    :align: center
 
 |
-| envois trame idle
+| Sur cette image nous voyons une image d'oscilloscope montrant une trame **IDLE**.
+On peut observer :
+
+ - les 14 bits √† *'1'* du pr√©ambule,
+ - l'octet d'adresse qui correspond √† l'adresse *0xFF* (adresse vers rien)
+ - l'octet de vitesse √† *0x0* (vitesse nulle)
+ - l'octet de CRC egal √† *0xFF* (**xor** entre adresse et vitesse)
+
+|
 |
 
-      
-fonctionalitÈes implÈmentÈes (type de vitesse, phares, klakons)
-tableau
+Nous avons implement√© differents fonctionalit√© pour les diff√©rents trains :
+
+ - 8 vitesses
+ - allumage/extinction des phares de le locomotive.
+ - un klaxon
+ - le bruit de moteur
+
+|
+|
 
 
 image maquette
@@ -582,11 +642,47 @@ image maquette
    :alt: photo maquette
    :align: center
 
-
+-------------------------------
+	   
 VI) Microblaze
 ==============
 
+| Le microblaze est un petit microcontroleur int√©gr√© sur la carte ``Nexys 4 DDR``. On  va s'en servir 
+| ici pour integer une de nos ``IP`` √†  la centrale existante.
+| Cette ``IP`` se chargera de la gestion des diff√©rents boutons, et  remplacera une partie de 
+| notre ``IHM``. Rajouter cette fonctionalit√©e va nous permettre de voir comment faire une architecture
+| *hybride mat√©rielle logicielle*.
+| 
+| Voici le schema que nous allons utiliser comme interface entre le  ``microblaze`` et notre ``IP``.
+|
 
+.. image:: IP.png
+   :scale: 100 %
+   :alt: photo maquette
+   :align: center
+
+| Cette IP recup√®re la valeur en entr√©e des boutons et va √©crire une valeur sp√©ciale dans des 
+| registres pour signaler qu'il y a eu un appuis √† la centrale.	   
+
+
+.. code:: c
+
+ Le code C de l'ip
+ .
+ .
+ .
+
+
+---------------------------------------------------------
 
 VII) Conclusion
 ===============
+
+| Nous avons r√©ussit √† mettre en place les **deux centrales**. Une *mat√©rielle*, l'autre *hybride*.
+| Les deux permettent de faire bouger une ou plusieures *locomotives* sur la maquette et
+| de leur permettre de de r√©aliser plusieurs actions.
+|
+| Les **deux centrales** cr√©es nous ont permis de nous apercevoir qu‚Äôil est important d‚Äôutiliser ou
+|  non la carte ``microblaze`` si l'on veut plus de possibilit√©es de *modulation*.
+| Le ``microblaze`` permet de modifier le comportements de l'application sans forcement modifier
+| la partie *mat√©rielle*.
