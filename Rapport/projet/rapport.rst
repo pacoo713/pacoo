@@ -34,7 +34,7 @@ Introduction
 |
 
 | Ce document présente le rapport du projet train de l'UE *FPGA1*.
-| Le projet a pour but de réaliser le circuit electrique d'une *centrale DCC* et de la 
+| Le projet a pour but de réaliser le circuit électrique d'une *centrale DCC* et de la 
 | tester sur une vraie maquette. 
 | Lors de ce Projet nous nous sommes servis du logiciel **Vivado** pour le développement de la
 | centrale ainsi que de la carte **FPGA** ``Nexys 4DDR``.
@@ -96,7 +96,7 @@ Chaque trame est composée de cette façon :
  - 14 *bit* à '1' *(préambule)*
  - 1 *octet* **d'adresse** 
  - 1 *octet* de **data**
- - 1 *octet de **CRC** *Xor* entre *adresse* et *data* *((epilogue))*
+ - 1 *octet de **CRC** *Xor* entre *adresse* et *data* *(épilogue)*
 
 Chaque partie est séparée par un *bit* à '0'.
 
@@ -238,7 +238,7 @@ III) Fonctions
 
 
 
-| Ce petit module sert à envoyer un *'1'* en suivant le protocole **DCC**, c'est à dire envoyer un *'0'* 
+| Ce petit module sert à envoyer un *'1'* en suivant le protocole **DCC**, c'est à dire à envoyer un *'0'* 
 | logique pendant **58** clock cycles suivi d'un *'1'* logique pendant **58** clock cycles.
 | Il tourne à *1 Mhz* grâce au module ``clock_divider``.
 |
@@ -271,7 +271,7 @@ III) Fonctions
  end send_zero;
 	  
 
-| Ce petit module sert à envoyer un *'0'* en suivant le protocole **DCC**, c'est à dire envoyer un *'0'* 
+| Ce petit module sert à envoyer un *'0'* en suivant le protocole **DCC**, c'est à dire à envoyer un *'0'* 
 | logique pendant **100** clock cycles suivi d'un *'1'* logique pendant **100** clock cycles.
 | Il tourne à *1 Mhz* grâce au module ``clock_divider``.
 |
@@ -309,11 +309,11 @@ III) Fonctions
 
 | Ce module sert à envoyer un préambule en suivant le protocole **DCC**, c'est à dire à envoyer 
 | une suite de 14 *'1'*. Ce module se sert du petit module ``send_one``.
-| Ce module attend de recevoir un signale **start_p** qui lui signale qu'il doit envoyer un preambule. 
+| Ce module attend de recevoir un signal **start_p** qui lui signale qu'il doit envoyer un préambule. 
 | Il se sert d'un compteur initialisé à ``0`` *(signal interne)* qui sert à connaitre le nombre de *'1'* envoyé. 
 | Il envoie  un **start_1** au module ``send_one`` et  attend de recevoir le signal  **end_1**
-| pour incrementer le compteur.
-| Une fois le preambule envoyé il renvoie le signal **end_p** qui signifie qu'il a fini.
+| pour incrémenter le compteur.
+| Une fois le préambule envoyé il renvoie le signal **end_p** qui signifie qu'il a fini.
 |
 
 .. image:: trame/send_preamble.png
@@ -352,7 +352,7 @@ III) Fonctions
 | Ce module sert à envoyer un octet en suivant le protocole **DCC**, c'est à dire envoyer 
 | une suite de 8 *'1'* ou *'0'* selon la valeur de l'octet en entrée. Ce module se sert des
 | petits modules ``send_one``, et ``send_zero``.
-| Ce module attend de recevoir un signal **start_b** qui lui signal qu'il doit envoyer un octet. 
+| Ce module attend de recevoir un signal **start_b** qui lui signale qu'il doit envoyer un octet. 
 | Il se sert d'un compteur initialisé à ``0`` qui sert à connaitre le nombre de *bit(s)* envoyés. 
 | Il envoie  un **start_0/1** à l'un des deux sous-modules et  attend de recevoir le signal
 | **end_0/1** avant d'envoyer le bit suivant et incrémenter le compteur.
@@ -437,7 +437,7 @@ IV) IHM
 
 
 |
-|                                      *Photo de l'interface*
+|
 |
 |
 
@@ -565,7 +565,7 @@ V) Implémentation sur la maquette
 
 | 
 | Le module ``interface`` envoie en permanence vers le module ``Master`` la valeur courante des différentes commandes.
-| Le module ``Master`` ne mets à jour les valeurs à envoyer vers le train que lorsqu'il détecte un appui
+| Le module ``Master`` ne met à jour les valeurs à envoyer vers le train que lorsqu'il détecte un appui
 | sur le bouton central. Dans ce cas la valeur locale des commandes est mise à jour .
 |
 Il envoit par contre en continue un groupe de 4 trames vers le(s)
@@ -624,7 +624,7 @@ On peut observer :
 |
 |
 
-Nous avons implementé differents fonctionalité pour les différents trains :
+Nous avons implémenté différentes fonctionnalitées pour les différents trains :
 
  - 8 vitesses
  - allumage/extinction des phares de le locomotive.
@@ -647,30 +647,87 @@ image maquette
 VI) Microblaze
 ==============
 
-| Le microblaze est un petit microcontroleur intégré sur la carte ``Nexys 4 DDR``. On  va s'en servir 
-| ici pour integer une de nos ``IP`` à  la centrale existante.
+| Le microblaze est un petit microcontroleur intégré sur la carte ``Nexys 4 DDR``. Nous allons nous en servir 
+| pour integer une de nos ``IP`` à  la centrale existante.
 | Cette ``IP`` se chargera de la gestion des différents boutons, et  remplacera une partie de 
-| notre ``IHM``. Rajouter cette fonctionalitée va nous permettre de voir comment faire une architecture
+| notre ``IHM``. Rajouter cette fonctionalité nous a permis de voir comment faire une architecture
 | *hybride matérielle logicielle*.
 | 
 | Voici le schema que nous allons utiliser comme interface entre le  ``microblaze`` et notre ``IP``.
 |
 
-.. image:: IP.png
+.. image:: diagramme2.png
    :scale: 100 %
    :alt: photo maquette
    :align: center
 
-| Cette IP recupère la valeur en entrée des boutons et va écrire une valeur spéciale dans des 
-| registres pour signaler qu'il y a eu un appuis à la centrale.	   
+| Cette IP récupère la valeur en entrée des boutons et va écrire une valeur spéciale dans des 
+| registres pour signaler qu'il y a eu un appui à la centrale.	   
 
 
 .. code:: c
 
- Le code C de l'ip
- .
- .
- .
+  while(1) {
+
+    // left
+    if ( (XGpio_DiscreteRead(&bouton,1) == 4)  & (old_input != 4)) {
+
+      setting = (setting + 1) % 4;
+
+      XGpio_DiscreteWrite(&out_set,1,setting);
+      XGpio_DiscreteWrite(&out_num,1,0);
+
+      old_input = 4;
+    }
+
+    // right
+    else if (XGpio_DiscreteRead(&bouton,1) == 1 & (old_input != 1)) {
+
+      switch (setting) {
+
+      case 0 :
+	addr = (addr + 1) % 7;
+	XGpio_DiscreteWrite(&out_add,1,addr);
+	break;
+
+      case 1 :
+	speed = (speed + 1) % 8;
+	XGpio_DiscreteWrite(&out_speed,1,speed);
+	break;
+
+      case 2 :
+	aigui = (aigui + 1) % 8;
+	XGpio_DiscreteWrite(&out_aigui,1,aigui);
+	break;
+
+      case 3 :
+	feature = (feature + 1) % 8;
+	XGpio_DiscreteWrite(&out_feature,1,feature);
+	break;
+
+      default :
+
+	break;
+      }
+      
+      
+      old_input = 1;
+    }
+
+    
+    else {
+    old_input = 0;
+    }
+
+
+
+    
+    /* tempo for bounce */
+    for( i = 0 ; i < 1000000 ; i ++) {
+      j = j + 1 % 10000;
+    }
+
+  }
 
 
 ---------------------------------------------------------
@@ -678,11 +735,12 @@ VI) Microblaze
 VII) Conclusion
 ===============
 
-| Nous avons réussit à mettre en place les **deux centrales**. Une *matérielle*, l'autre *hybride*.
-| Les deux permettent de faire bouger une ou plusieures *locomotives* sur la maquette et
-| de leur permettre de de réaliser plusieurs actions.
+| Nous avons réussi à mettre en place les **deux centrales** que nous avions prévu. Une *matérielle*, 
+| l'autre *hybride*. Les deux permettent de faire bouger une ou plusieurs *locomotives* sur la maquette et
+| permettent de réaliser plusieurs actions.
 |
-| Les **deux centrales** crées nous ont permis de nous apercevoir qu’il est important d’utiliser ou
-|  non la carte ``microblaze`` si l'on veut plus de possibilitées de *modulation*.
+| Les **deux centrales** crées nous ont permis de nous apercevoir que suivant le modèle que l'on veut
+| mettre en place (possibilitées accru de modulation). Il est important d’utiliser ou non la
+| carte ``microblaze`` si l'on veut plus de possibilitées de *modulation*.
 | Le ``microblaze`` permet de modifier le comportements de l'application sans forcement modifier
 | la partie *matérielle*.
