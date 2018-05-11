@@ -5,18 +5,18 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 
-entity send_zero is
+entity dcc_bit0 is
   Port (
     clk     : in  STD_LOGIC;
-    start_0 : in  STD_LOGIC := '0';
-    end_0   : out STD_LOGIC := '0';
-    pulse_0 : out STD_LOGIC := '0'
+    GO_0 : in  STD_LOGIC := '0';
+    FIN_0   : out STD_LOGIC := '0';
+    DCC_0 : out STD_LOGIC := '0'
     );      
-end send_zero;
+end dcc_bit0;
 
 
 -- send a zero in DCC protocol
-architecture Behavioral of send_zero is
+architecture Behavioral of dcc_bit0 is
   
 begin
   
@@ -30,16 +30,16 @@ begin
   begin
     if rising_edge (clk) then
 
-      end_0   <= '0';
-      pulse_0 <= '0';
+      FIN_0   <= '0';
+      DCC_0 <= '0';
 
-      if start_0 = '1' then
+      if GO_0 = '1' then
         cpt := cpt + 2;
         
         if which = 0 then 
-          -- send à 0 for 100 clock cycle
+          -- send Ã  0 for 100 clock cycle
 
-          pulse_0 <= '0';
+          DCC_0 <= '0';
 
           -- reset the cpt
           if cpt > 96 then
@@ -48,15 +48,15 @@ begin
           end if;
           
         else
-          -- send à 1 for 100 clock cycle
+          -- send Ã  1 for 100 clock cycle
           
-          pulse_0 <= '1';
+          DCC_0 <= '1';
           
           -- reset the cpt and put the pulse to 0 again            
           if cpt > 100 then
-            end_0   <= '1';
+            FIN_0   <= '1';
             cpt := 0;
-            pulse_0 <= '0';
+            DCC_0 <= '0';
             which := 0;
           end if;
 
@@ -64,9 +64,9 @@ begin
         end if;
         
       else
-        end_0   <= '0';
-        pulse_0 <= '0';
-        
+        FIN_0   <= '0';
+        DCC_0 <= '0';
+       
       --  end if start_0
       end if;
       
